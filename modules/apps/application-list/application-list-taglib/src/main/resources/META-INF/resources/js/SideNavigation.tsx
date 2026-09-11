@@ -8,12 +8,15 @@ import ClayEmptyState from '@clayui/empty-state';
 import {ClayVerticalNav} from '@clayui/nav';
 import ClaySticker from '@clayui/sticker';
 import {SearchResultsMessage} from '@liferay/layout-js-components-web';
+import classNames from 'classnames';
+import {useId} from 'frontend-js-components-web';
 import {sub} from 'frontend-js-web';
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 
 import SideNavigationColorSchemeButton from './SideNavigationColorSchemeButton';
 import SideNavigationItemContent from './SideNavigationItemContent';
 import SideNavigationResultsSkeleton from './SideNavigationResultsSkeleton';
+import SideNavigationScopeItem from './SideNavigationScopeItem';
 import SideNavigationSearchInput from './SideNavigationSearchInput';
 import SideNavigationSiteSelector from './SideNavigationSiteSelector';
 import {SideNavigationItem} from './types/SideNavigation';
@@ -81,6 +84,8 @@ function SideNavigation({
 		useState<Set<React.Key>>(initialExpandedKeys);
 
 	const [visible, setVisible] = useState(initialVisible);
+
+	const baseId = useId();
 
 	const {
 		items: navigationItems,
@@ -257,27 +262,44 @@ function SideNavigation({
 						onExpandedChange={updateExpandedKeys}
 						stacked={true}
 					>
-						{(item) => {
-							if (typeof item === 'string') {
-								return <span>{item}</span>;
+						{(collectionItem) => {
+							if (typeof collectionItem === 'string') {
+								return <span>{collectionItem}</span>;
+							}
+
+							const item = collectionItem as SideNavigationItem;
+
+							if (item.scopeMarker && item.scope) {
+								return (
+									<SideNavigationScopeItem
+										id={`${baseId}-${item.scope}`}
+										key={item.id}
+										label={item.label}
+										scope={item.scope}
+									/>
+								);
 							}
 
 							return (
 								<ClayVerticalNav.Item
-									className={
-										item.parentLabel
-											? 'side-navigation-section-item'
+									aria-describedby={
+										!isFilterActive && item.scope
+											? `${baseId}-${item.scope}`
 											: undefined
 									}
+									className={classNames(
+										item.parentLabel &&
+											'side-navigation-section-item',
+										item.scope &&
+											`side-navigation-scope-zone-${item.scope}`
+									)}
 									data-canonical-name={item.canonicalName}
 									href={item.href}
 									items={item.items}
 									key={item.id}
 									textValue={item.label}
 								>
-									<SideNavigationItemContent
-										item={item as SideNavigationItem}
-									/>
+									<SideNavigationItemContent item={item} />
 								</ClayVerticalNav.Item>
 							);
 						}}
