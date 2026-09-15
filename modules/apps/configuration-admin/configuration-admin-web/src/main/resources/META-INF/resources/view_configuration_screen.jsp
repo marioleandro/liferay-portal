@@ -36,6 +36,8 @@ portletDisplay.setURLBack(portletURL.toString());
 renderResponse.setTitle(categoryDisplayName);
 
 ConfigurationCategoryNavigationItemContributor configurationCategoryNavigationItemContributor = (ConfigurationCategoryNavigationItemContributor)request.getAttribute(ConfigurationAdminWebKeys.CONFIGURATION_CATEGORY_NAVIGATION_ITEM_CONTRIBUTOR);
+
+List<ConfigurationCategoryNavigationItemContributor> configurationCategoryNavigationItemContributors = (List<ConfigurationCategoryNavigationItemContributor>)request.getAttribute(ConfigurationAdminWebKeys.CONFIGURATION_CATEGORY_NAVIGATION_ITEM_CONTRIBUTORS);
 %>
 
 <liferay-util:include page="/configuration_category_navigation_bar.jsp" servletContext="<%= application %>" />
@@ -49,7 +51,9 @@ ConfigurationCategoryNavigationItemContributor configurationCategoryNavigationIt
 
 	</c:when>
 	<c:otherwise>
-		<clay:container-fluid>
+		<clay:container-fluid
+			cssClass='<%= ListUtil.isNotEmpty(configurationCategoryNavigationItemContributors) ? "pt-4" : StringPool.BLANK %>'
+		>
 			<clay:row>
 				<clay:col
 					md="3"

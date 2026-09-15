@@ -19,21 +19,21 @@ if (ListUtil.isNotEmpty(configurationCategoryNavigationItemContributors)) {
 }
 %>
 
-<clay:container-fluid>
-	<clay:col
-		size="12"
-	>
-		<c:choose>
-			<c:when test="<%= navigationItemList != null %>">
-				<clay:navigation-bar
-					navigationItems="<%= navigationItemList %>"
-				/>
-			</c:when>
-			<c:otherwise>
+<c:choose>
+	<c:when test="<%= navigationItemList != null %>">
+		<clay:navigation-bar
+			navigationItems="<%= navigationItemList %>"
+		/>
+	</c:when>
+	<c:otherwise>
+		<clay:container-fluid>
+			<clay:col
+				size="12"
+			>
 				<liferay-site-navigation:breadcrumb
 					breadcrumbEntries="<%= BreadcrumbEntriesUtil.getBreadcrumbEntries(request, false, false, false, false, true) %>"
 				/>
-			</c:otherwise>
-		</c:choose>
-	</clay:col>
-</clay:container-fluid>
+			</clay:col>
+		</clay:container-fluid>
+	</c:otherwise>
+</c:choose>

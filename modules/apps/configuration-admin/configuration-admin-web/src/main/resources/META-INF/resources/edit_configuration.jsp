@@ -52,6 +52,8 @@ portletDisplay.setShowBackIcon(true);
 portletDisplay.setURLBack(redirect);
 
 renderResponse.setTitle(categoryDisplayName);
+
+List<ConfigurationCategoryNavigationItemContributor> configurationCategoryNavigationItemContributors = (List<ConfigurationCategoryNavigationItemContributor>)request.getAttribute(ConfigurationAdminWebKeys.CONFIGURATION_CATEGORY_NAVIGATION_ITEM_CONTRIBUTORS);
 %>
 
 <liferay-ui:error exception="<%= ConfigurationValidationException.class %>">
@@ -77,7 +79,9 @@ renderResponse.setTitle(categoryDisplayName);
 
 <liferay-util:include page="/configuration_category_navigation_bar.jsp" servletContext="<%= application %>" />
 
-<clay:container-fluid>
+<clay:container-fluid
+	cssClass='<%= ListUtil.isNotEmpty(configurationCategoryNavigationItemContributors) ? "pt-4" : StringPool.BLANK %>'
+>
 	<clay:row>
 		<clay:col
 			md="3"
