@@ -119,7 +119,7 @@ definition {
 	macro openLanguageOverridePortlet(baseURL = null) {
 		Navigator.openWithAppendToBaseURL(
 			baseURL = ${baseURL},
-			urlAppend = "group/control_panel/manage?p_p_id=com_liferay_portal_language_override_web_internal_portlet_PLOPortlet");
+			urlAppend = "group/control_panel/manage?p_p_id=com_liferay_configuration_admin_web_portlet_InstanceSettingsPortlet&_com_liferay_configuration_admin_web_portlet_InstanceSettingsPortlet_mvcRenderCommandName=%2Fconfiguration_admin%2Fview_configuration_screen&_com_liferay_configuration_admin_web_portlet_InstanceSettingsPortlet_configurationCategoryNavigationItemKey=language-overrides");
 	}
 
 	@summary = "Default summary"

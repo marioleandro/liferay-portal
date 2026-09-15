@@ -859,10 +859,7 @@ definition {
 	@description = "This is a use case for LPS-162509."
 	@priority = 4
 	test ViewSuggestionsLocalizedDisplayGroupName {
-		ApplicationsMenu.gotoPortlet(
-			category = "Configuration",
-			panel = "Control Panel",
-			portlet = "Language Override");
+		LanguageOverride.openLanguageOverridePortlet();
 
 		Click(locator1 = "Button#PLUS");
 

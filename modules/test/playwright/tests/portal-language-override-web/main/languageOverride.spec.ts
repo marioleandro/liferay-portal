@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {mergeTests} from '@playwright/test';
+import {expect, mergeTests} from '@playwright/test';
 
 import {languageOverridePageTest} from '../../../fixtures/languageOverridePageTest';
 import {loginTest} from '../../../fixtures/loginTest';
@@ -318,6 +318,38 @@ test(
 				'en-US',
 				escapedValue
 			);
+		});
+	}
+);
+
+test(
+	'Can switch between the Language Overrides and Configuration tabs',
+	{tag: '@LPD-102716'},
+	async ({languageOverridePage, page}) => {
+		await languageOverridePage.goto();
+
+		await test.step('Assert that the Language Overrides tab shows the management table', async () => {
+			await languageOverridePage.assertTabIsActive('Language Overrides');
+
+			await expect(languageOverridePage.newButton).toBeVisible();
+		});
+
+		await test.step('Assert that the Configuration tab shows the virtual instance scope settings', async () => {
+			await languageOverridePage.goToTab('Configuration');
+
+			await expect(
+				page.getByText('Virtual Instance Scope')
+			).toBeVisible();
+
+			await expect(
+				page.getByRole('link', {name: 'Time Zone'})
+			).toBeVisible();
+		});
+
+		await test.step('Assert that the Language Overrides tab is reachable again', async () => {
+			await languageOverridePage.goToTab('Language Overrides');
+
+			await expect(languageOverridePage.newButton).toBeVisible();
 		});
 	}
 );

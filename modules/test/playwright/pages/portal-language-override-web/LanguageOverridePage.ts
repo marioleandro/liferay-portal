@@ -9,8 +9,8 @@ import {clickAndExpectToBeVisible} from '../../utils/clickAndExpectToBeVisible';
 import {PORTLET_URLS} from '../../utils/portletUrls';
 import {waitForAlert} from '../../utils/waitForAlert';
 
-const PLO_PORTLET_NAMESPACE =
-	'_com_liferay_portal_language_override_web_internal_portlet_PLOPortlet_value_';
+const INSTANCE_SETTINGS_VALUE_INPUT_ID_PREFIX =
+	'_com_liferay_configuration_admin_web_portlet_InstanceSettingsPortlet_value_';
 
 export type TLanguageKey = {
 	key: string;
@@ -20,17 +20,29 @@ export type TLanguageKey = {
 	}[];
 };
 
+export type TLocalizationTab = 'Configuration' | 'Language Overrides';
+
 export class LanguageOverridePage {
+	readonly configurationTab: Locator;
 	readonly filterButton: Locator;
+	readonly languageOverridesTab: Locator;
 	readonly newButton: Locator;
 	readonly optionsButton: Locator;
 	readonly page: Page;
 	readonly saveButton: Locator;
 
 	constructor(page: Page) {
+		this.configurationTab = page.getByRole('link', {
+			exact: true,
+			name: 'Configuration',
+		});
 		this.filterButton = page.getByRole('button', {
 			exact: true,
 			name: 'Filter',
+		});
+		this.languageOverridesTab = page.getByRole('link', {
+			exact: true,
+			name: 'Language Overrides',
 		});
 		this.newButton = page.getByRole('link', {name: 'Add Language Key'});
 		this.optionsButton = page.getByRole('button', {name: 'Options'});
@@ -122,6 +134,10 @@ export class LanguageOverridePage {
 		).toBeVisible();
 	}
 
+	async assertTabIsActive(tab: TLocalizationTab) {
+		await expect(this.getTab(tab)).toHaveClass(/active/);
+	}
+
 	async changeFilter(option: 'Any Language' | 'Selected Language') {
 		await clickAndExpectToBeVisible({
 			autoClick: true,
@@ -160,6 +176,14 @@ export class LanguageOverridePage {
 
 	async goto() {
 		await this.page.goto(`/group/guest${PORTLET_URLS.languageOverride}`);
+	}
+
+	async goToTab(tab: TLocalizationTab) {
+		await this.getTab(tab).click();
+
+		await this.page.waitForLoadState();
+
+		await this.assertTabIsActive(tab);
 	}
 
 	async importLanguageFile({
@@ -258,9 +282,15 @@ export class LanguageOverridePage {
 		await waitForAlert(this.page);
 	}
 
+	private getTab(tab: TLocalizationTab) {
+		return tab === 'Configuration'
+			? this.configurationTab
+			: this.languageOverridesTab;
+	}
+
 	private getTranslationInput(languageId: string) {
 		return this.page.locator(
-			`[id="${PLO_PORTLET_NAMESPACE}${languageId.replace('-', '_')}"]`
+			`[id="${INSTANCE_SETTINGS_VALUE_INPUT_ID_PREFIX}${languageId.replace('-', '_')}"]`
 		);
 	}
 }

@@ -43,7 +43,6 @@ type ControlPanelMenuItem =
 	| 'Gogo Shell'
 	| 'Instance Settings'
 	| 'Job Scheduler'
-	| 'Language Override'
 	| 'Monitoring'
 	| 'License Manager'
 	| 'OAuth 2 Administration'
