@@ -14,7 +14,7 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.language.override.constants.PLOActionKeys;
-import com.liferay.portal.language.override.constants.PLOPortletKeys;
+import com.liferay.portal.language.override.web.internal.portlet.configuration.icon.util.PLOPortletConfigurationIconUtil;
 
 import jakarta.portlet.PortletRequest;
 import jakarta.portlet.PortletResponse;
@@ -26,7 +26,9 @@ import org.osgi.service.component.annotations.Reference;
  * @author Pei-Jung Lan
  */
 @Component(
-	property = "jakarta.portlet.name=" + PLOPortletKeys.PORTAL_LANGUAGE_OVERRIDE,
+	property = {
+		"path=-", "path=/configuration_admin/view_configuration_screen"
+	},
 	service = PortletConfigurationIcon.class
 )
 public class ImportTranslationsPortletConfigurationIcon
@@ -44,12 +46,10 @@ public class ImportTranslationsPortletConfigurationIcon
 		ThemeDisplay themeDisplay = (ThemeDisplay)portletRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 
-		return PortletURLBuilder.create(
-			_portal.getControlPanelPortletURL(
-				portletRequest, PLOPortletKeys.PORTAL_LANGUAGE_OVERRIDE,
-				PortletRequest.RENDER_PHASE)
-		).setMVCPath(
-			"/configuration/icon/import_translations.jsp"
+		return PortletURLBuilder.createRenderURL(
+			_portal.getLiferayPortletResponse(portletResponse)
+		).setMVCRenderCommandName(
+			"/portal_language_override/import_translations"
 		).setBackURL(
 			themeDisplay.getURLCurrent()
 		).buildString();
@@ -62,6 +62,12 @@ public class ImportTranslationsPortletConfigurationIcon
 
 	@Override
 	public boolean isShow(PortletRequest portletRequest) {
+		if (!PLOPortletConfigurationIconUtil.isLanguageOverridesView(
+				_portal, portletRequest)) {
+
+			return false;
+		}
+
 		ThemeDisplay themeDisplay = (ThemeDisplay)portletRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 

@@ -13,8 +13,8 @@ import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.configuration.icon.BasePortletConfigurationIcon;
 import com.liferay.portal.kernel.portlet.configuration.icon.PortletConfigurationIcon;
 import com.liferay.portal.kernel.util.Portal;
-import com.liferay.portal.language.override.constants.PLOPortletKeys;
 import com.liferay.portal.language.override.service.PLOEntryService;
+import com.liferay.portal.language.override.web.internal.portlet.configuration.icon.util.PLOPortletConfigurationIconUtil;
 
 import jakarta.portlet.PortletRequest;
 import jakarta.portlet.PortletResponse;
@@ -27,7 +27,9 @@ import org.osgi.service.component.annotations.Reference;
  * @author Erick Monteiro
  */
 @Component(
-	property = "jakarta.portlet.name=" + PLOPortletKeys.PORTAL_LANGUAGE_OVERRIDE,
+	property = {
+		"path=-", "path=/configuration_admin/view_configuration_screen"
+	},
 	service = PortletConfigurationIcon.class
 )
 public class ExportPLOEntriesPortletConfigurationIcon
@@ -53,7 +55,8 @@ public class ExportPLOEntriesPortletConfigurationIcon
 
 		ResourceURL resourceURL = liferayPortletResponse.createResourceURL();
 
-		resourceURL.setResourceID("exportPLOEntries");
+		resourceURL.setResourceID(
+			"/portal_language_override/export_plo_entries");
 
 		return resourceURL.toString();
 	}
@@ -65,6 +68,12 @@ public class ExportPLOEntriesPortletConfigurationIcon
 
 	@Override
 	public boolean isShow(PortletRequest portletRequest) {
+		if (!PLOPortletConfigurationIconUtil.isLanguageOverridesView(
+				_portal, portletRequest)) {
+
+			return false;
+		}
+
 		try {
 			int ploEntriesCount = _ploEntryService.getPLOEntriesCount();
 
