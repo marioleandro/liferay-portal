@@ -87,6 +87,31 @@ public class ViewConfigurationScreenMVCRenderCommandTest {
 		}
 	}
 
+	@Test
+	public void testRenderWithInvalidConfigurationCategoryNavigationItemKey()
+		throws Exception {
+
+		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
+			_getMockLiferayPortletRenderRequest();
+
+		mockLiferayPortletRenderRequest.setParameter(
+			"configurationCategoryNavigationItemKey", "invalid-key");
+
+		try {
+			_mvcRenderCommand.render(
+				mockLiferayPortletRenderRequest,
+				new MockLiferayPortletRenderResponse());
+
+			Assert.fail();
+		}
+		catch (PortletException portletException) {
+			Assert.assertEquals(
+				"The configuration category navigation item \"invalid-key\" " +
+					"is not accessible",
+				portletException.getMessage());
+		}
+	}
+
 	private MockLiferayPortletRenderRequest
 			_getMockLiferayPortletRenderRequest()
 		throws Exception {

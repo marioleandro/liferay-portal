@@ -6,6 +6,7 @@
 package com.liferay.configuration.admin.web.internal.util;
 
 import com.liferay.configuration.admin.category.ConfigurationCategory;
+import com.liferay.configuration.admin.category.ConfigurationCategoryNavigationItemContributor;
 import com.liferay.configuration.admin.category.ConfigurationCategoryShowFilter;
 import com.liferay.configuration.admin.display.ConfigurationScreen;
 import com.liferay.configuration.admin.web.internal.display.ConfigurationCategoryDisplay;
@@ -29,6 +30,7 @@ import java.io.Serializable;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -127,6 +129,34 @@ public class ConfigurationEntryRetrieverImpl
 	}
 
 	@Override
+	public ConfigurationCategoryNavigationItemContributor
+		getConfigurationCategoryNavigationItemContributor(
+			String configurationCategoryNavigationItemKey) {
+
+		return _configurationCategoryNavigationItemContributorServiceTrackerMap.
+			getService(configurationCategoryNavigationItemKey);
+	}
+
+	@Override
+	public List<ConfigurationCategoryNavigationItemContributor>
+		getConfigurationCategoryNavigationItemContributors(
+			String configurationCategoryKey) {
+
+		List<ConfigurationCategoryNavigationItemContributor>
+			configurationCategoryNavigationItemContributors =
+				_configurationCategoryNavigationItemContributorsServiceTrackerMap.
+					getService(configurationCategoryKey);
+
+		if (configurationCategoryNavigationItemContributors == null) {
+			return Collections.emptyList();
+		}
+
+		return ListUtil.filter(
+			configurationCategoryNavigationItemContributors,
+			ConfigurationCategoryNavigationItemContributor::isVisible);
+	}
+
+	@Override
 	public List<ConfigurationCategorySectionDisplay>
 		getConfigurationCategorySectionDisplays(
 			ExtendedObjectClassDefinition.Scope scope, Serializable scopePK) {
@@ -166,6 +196,33 @@ public class ConfigurationEntryRetrieverImpl
 	protected void activate(BundleContext bundleContext) {
 		_bundleContext = bundleContext;
 
+		_configurationCategoryNavigationItemContributorServiceTrackerMap =
+			ServiceTrackerMapFactory.openSingleValueMap(
+				bundleContext,
+				ConfigurationCategoryNavigationItemContributor.class, null,
+				(serviceReference, emitter) -> {
+					ConfigurationCategoryNavigationItemContributor
+						configurationCategoryNavigationItemContributor =
+							bundleContext.getService(serviceReference);
+
+					emitter.emit(
+						configurationCategoryNavigationItemContributor.
+							getKey());
+				});
+		_configurationCategoryNavigationItemContributorsServiceTrackerMap =
+			ServiceTrackerMapFactory.openMultiValueMap(
+				bundleContext,
+				ConfigurationCategoryNavigationItemContributor.class, null,
+				(serviceReference, emitter) -> {
+					ConfigurationCategoryNavigationItemContributor
+						configurationCategoryNavigationItemContributor =
+							bundleContext.getService(serviceReference);
+
+					emitter.emit(
+						configurationCategoryNavigationItemContributor.
+							getCategoryKey());
+				});
+
 		_configurationCategoryServiceTrackerMap =
 			ServiceTrackerMapFactory.openSingleValueMap(
 				bundleContext, ConfigurationCategory.class, null,
@@ -202,6 +259,10 @@ public class ConfigurationEntryRetrieverImpl
 
 	@Deactivate
 	protected void deactivate() {
+		_configurationCategoryNavigationItemContributorServiceTrackerMap.
+			close();
+		_configurationCategoryNavigationItemContributorsServiceTrackerMap.
+			close();
 		_configurationCategoryServiceTrackerMap.close();
 		_configurationCategoryShowFilterServiceTrackerList.close();
 		_configurationScreenServiceTrackerMap.close();
@@ -375,6 +436,12 @@ public class ConfigurationEntryRetrieverImpl
 	}
 
 	private BundleContext _bundleContext;
+	private ServiceTrackerMap
+		<String, ConfigurationCategoryNavigationItemContributor>
+			_configurationCategoryNavigationItemContributorServiceTrackerMap;
+	private ServiceTrackerMap
+		<String, List<ConfigurationCategoryNavigationItemContributor>>
+			_configurationCategoryNavigationItemContributorsServiceTrackerMap;
 	private final Set<ServiceRegistration<ConfigurationCategory>>
 		_configurationCategoryServiceRegistrations = new HashSet<>();
 	private ServiceTrackerMap<String, ConfigurationCategory>

@@ -6,6 +6,7 @@
 package com.liferay.configuration.admin.web.internal.util;
 
 import com.liferay.configuration.admin.category.ConfigurationCategory;
+import com.liferay.configuration.admin.category.ConfigurationCategoryNavigationItemContributor;
 import com.liferay.configuration.admin.display.ConfigurationScreen;
 import com.liferay.configuration.admin.web.internal.display.ConfigurationCategoryMenuDisplay;
 import com.liferay.configuration.admin.web.internal.display.ConfigurationCategorySectionDisplay;
@@ -37,6 +38,14 @@ public interface ConfigurationEntryRetriever {
 		getConfigurationCategoryMenuDisplays(
 			String languageId, ExtendedObjectClassDefinition.Scope scope,
 			Serializable scopePK);
+
+	public ConfigurationCategoryNavigationItemContributor
+		getConfigurationCategoryNavigationItemContributor(
+			String configurationCategoryNavigationItemKey);
+
+	public List<ConfigurationCategoryNavigationItemContributor>
+		getConfigurationCategoryNavigationItemContributors(
+			String configurationCategoryKey);
 
 	public List<ConfigurationCategorySectionDisplay>
 		getConfigurationCategorySectionDisplays(
