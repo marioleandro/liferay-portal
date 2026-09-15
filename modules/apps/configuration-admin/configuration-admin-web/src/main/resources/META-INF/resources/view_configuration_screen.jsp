@@ -36,36 +36,9 @@ portletDisplay.setURLBack(portletURL.toString());
 renderResponse.setTitle(categoryDisplayName);
 
 ConfigurationCategoryNavigationItemContributor configurationCategoryNavigationItemContributor = (ConfigurationCategoryNavigationItemContributor)request.getAttribute(ConfigurationAdminWebKeys.CONFIGURATION_CATEGORY_NAVIGATION_ITEM_CONTRIBUTOR);
-
-List<ConfigurationCategoryNavigationItemContributor> configurationCategoryNavigationItemContributors = (List<ConfigurationCategoryNavigationItemContributor>)request.getAttribute(ConfigurationAdminWebKeys.CONFIGURATION_CATEGORY_NAVIGATION_ITEM_CONTRIBUTORS);
-
-String configurationCategoryNavigationItemKey = ParamUtil.getString(request, "configurationCategoryNavigationItemKey");
-
-NavigationItemList navigationItemList = null;
-
-if (ListUtil.isNotEmpty(configurationCategoryNavigationItemContributors)) {
-	navigationItemList = ConfigurationCategoryUtil.getNavigationItemList(configurationCategoryMenuDisplay, configurationCategoryNavigationItemContributors, configurationCategoryNavigationItemKey, liferayPortletResponse, renderRequest, renderResponse);
-}
 %>
 
-<clay:container-fluid>
-	<clay:col
-		size="12"
-	>
-		<c:choose>
-			<c:when test="<%= navigationItemList != null %>">
-				<clay:navigation-bar
-					navigationItems="<%= navigationItemList %>"
-				/>
-			</c:when>
-			<c:otherwise>
-				<liferay-site-navigation:breadcrumb
-					breadcrumbEntries="<%= BreadcrumbEntriesUtil.getBreadcrumbEntries(request, false, false, false, false, true) %>"
-				/>
-			</c:otherwise>
-		</c:choose>
-	</clay:col>
-</clay:container-fluid>
+<liferay-util:include page="/configuration_category_navigation_bar.jsp" servletContext="<%= application %>" />
 
 <c:choose>
 	<c:when test="<%= configurationCategoryNavigationItemContributor != null %>">

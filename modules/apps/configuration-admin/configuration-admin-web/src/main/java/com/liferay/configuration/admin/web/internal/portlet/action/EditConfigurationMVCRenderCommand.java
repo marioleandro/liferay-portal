@@ -108,6 +108,13 @@ public class EditConfigurationMVCRenderCommand implements MVCRenderCommand {
 						configurationScopeDisplayContext.getScope(),
 						configurationScopeDisplayContext.getScopePK()));
 
+			renderRequest.setAttribute(
+				ConfigurationAdminWebKeys.
+					CONFIGURATION_CATEGORY_NAVIGATION_ITEM_CONTRIBUTORS,
+				_configurationEntryRetriever.
+					getConfigurationCategoryNavigationItemContributors(
+						configurationModel.getCategory()));
+
 			ConfigurationEntry configurationEntry =
 				new ConfigurationModelConfigurationEntry(configurationModel);
 
