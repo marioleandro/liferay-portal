@@ -16,7 +16,7 @@ portletDisplay.setURLBack(editDisplayContext.getBackURL());
 renderResponse.setTitle(editDisplayContext.getPageTitle());
 %>
 
-<portlet:actionURL name="editPLOEntry" var="editPLOEntryURL" />
+<portlet:actionURL name="/portal_language_override/edit_plo_entry" var="editPLOEntryURL" />
 
 <clay:container-fluid>
 	<liferay-frontend:edit-form
@@ -85,7 +85,7 @@ renderResponse.setTitle(editDisplayContext.getPageTitle());
 					</clay:content-col>
 
 					<c:if test="<%= Validator.isNotNull(editDisplayContext.getKey()) %>">
-						<portlet:actionURL name="deletePLOEntries" var="deletePLOEntriesURL">
+						<portlet:actionURL name="/portal_language_override/delete_plo_entries" var="deletePLOEntriesURL">
 							<portlet:param name="redirect" value="<%= editDisplayContext.getBackURL() %>" />
 							<portlet:param name="key" value="<%= editDisplayContext.getKey() %>" />
 						</portlet:actionURL>

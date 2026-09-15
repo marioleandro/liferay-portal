@@ -24,7 +24,7 @@ LanguageItemDisplay rowObjectLanguageItemDisplay = (LanguageItemDisplay)row.getO
 >
 	<c:if test="<%= viewDisplayContext.isHasManageLanguageOverridesPermission() %>">
 		<portlet:renderURL var="editPLOEntryURL">
-			<portlet:param name="mvcPath" value="/edit_plo_entry.jsp" />
+			<portlet:param name="mvcRenderCommandName" value="/portal_language_override/edit_plo_entry" />
 			<portlet:param name="backURL" value="<%= currentURL %>" />
 			<portlet:param name="key" value="<%= rowObjectLanguageItemDisplay.getKey() %>" />
 			<portlet:param name="selectedLanguageId" value="<%= viewDisplayContext.getSelectedLanguageId() %>" />
@@ -38,7 +38,7 @@ LanguageItemDisplay rowObjectLanguageItemDisplay = (LanguageItemDisplay)row.getO
 
 		<c:if test="<%= rowObjectLanguageItemDisplay.isOverride() %>">
 			<c:if test="<%= rowObjectLanguageItemDisplay.isOverrideSelectedLanguageId() %>">
-				<portlet:actionURL name="deletePLOEntry" var="deletePLOEntryURL">
+				<portlet:actionURL name="/portal_language_override/delete_plo_entry" var="deletePLOEntryURL">
 					<portlet:param name="redirect" value="<%= currentURL %>" />
 					<portlet:param name="key" value="<%= rowObjectLanguageItemDisplay.getKey() %>" />
 					<portlet:param name="selectedLanguageId" value="<%= viewDisplayContext.getSelectedLanguageId() %>" />
@@ -51,7 +51,7 @@ LanguageItemDisplay rowObjectLanguageItemDisplay = (LanguageItemDisplay)row.getO
 				/>
 			</c:if>
 
-			<portlet:actionURL name="deletePLOEntries" var="deletePLOEntriesURL">
+			<portlet:actionURL name="/portal_language_override/delete_plo_entries" var="deletePLOEntriesURL">
 				<portlet:param name="redirect" value="<%= currentURL %>" />
 				<portlet:param name="key" value="<%= rowObjectLanguageItemDisplay.getKey() %>" />
 			</portlet:actionURL>

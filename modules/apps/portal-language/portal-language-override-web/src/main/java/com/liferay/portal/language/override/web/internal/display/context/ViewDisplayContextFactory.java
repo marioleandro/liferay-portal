@@ -55,19 +55,14 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+
 /**
  * @author Drew Brokke
  */
+@Component(service = ViewDisplayContextFactory.class)
 public class ViewDisplayContextFactory {
-
-	public ViewDisplayContextFactory(
-		PermissionCheckerFactory permissionCheckerFactory,
-		PLOEntryLocalService ploEntryLocalService, Portal portal) {
-
-		_permissionCheckerFactory = permissionCheckerFactory;
-		_ploEntryLocalService = ploEntryLocalService;
-		_portal = portal;
-	}
 
 	public ViewDisplayContext create(
 		RenderRequest renderRequest, RenderResponse renderResponse) {
@@ -389,9 +384,16 @@ public class ViewDisplayContextFactory {
 		s -> Pattern.compile(
 			".*" + StringParser.escapeRegex(s) + ".*",
 			Pattern.CASE_INSENSITIVE + Pattern.UNICODE_CASE);
-	private final PermissionCheckerFactory _permissionCheckerFactory;
-	private final PLOEntryLocalService _ploEntryLocalService;
-	private final Portal _portal;
+
+	@Reference
+	private PermissionCheckerFactory _permissionCheckerFactory;
+
+	@Reference
+	private PLOEntryLocalService _ploEntryLocalService;
+
+	@Reference
+	private Portal _portal;
+
 	private final Function<String, Pattern> _valueMatchPatternFunction =
 		s -> Pattern.compile(
 			".*\\b" + StringParser.escapeRegex(s) + ".*",

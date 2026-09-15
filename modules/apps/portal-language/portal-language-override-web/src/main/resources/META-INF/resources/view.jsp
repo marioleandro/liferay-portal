@@ -36,7 +36,7 @@ ViewDisplayContext viewDisplayContext = (ViewDisplayContext)request.getAttribute
 			modelVar="languageItemDisplay"
 		>
 			<portlet:renderURL var="editPLOEntryURL">
-				<portlet:param name="mvcPath" value="/edit_plo_entry.jsp" />
+				<portlet:param name="mvcRenderCommandName" value="/portal_language_override/edit_plo_entry" />
 				<portlet:param name="backURL" value="<%= currentURL %>" />
 				<portlet:param name="key" value="<%= languageItemDisplay.getKey() %>" />
 				<portlet:param name="selectedLanguageId" value="<%= viewDisplayContext.getSelectedLanguageId() %>" />

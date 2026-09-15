@@ -5,6 +5,7 @@
 
 package com.liferay.portal.language.override.web.internal.portlet.action;
 
+import com.liferay.configuration.admin.constants.ConfigurationAdminPortletKeys;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.servlet.SessionErrors;
@@ -38,6 +39,7 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	property = {
+		"jakarta.portlet.name=" + ConfigurationAdminPortletKeys.INSTANCE_SETTINGS,
 		"jakarta.portlet.name=" + PLOPortletKeys.PORTAL_LANGUAGE_OVERRIDE,
 		"mvc.command.name=/portal_language_override/import_translations"
 	},
@@ -59,7 +61,8 @@ public class ImportTranslationsMVCActionCommand extends BaseMVCActionCommand {
 
 		if (!SessionErrors.isEmpty(actionRequest)) {
 			actionResponse.setRenderParameter(
-				"mvcPath", "/configuration/icon/import_translations.jsp");
+				"mvcRenderCommandName",
+				"/portal_language_override/import_translations");
 		}
 		else {
 			sendRedirect(actionRequest, actionResponse);
