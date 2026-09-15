@@ -12,6 +12,7 @@ import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItemList;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import jakarta.portlet.PortletURL;
@@ -26,6 +27,28 @@ import java.util.Objects;
  * @author Drew Brokke
  */
 public class ConfigurationCategoryUtil {
+
+	public static String getDefaultHREF(
+		ConfigurationCategoryMenuDisplay configurationCategoryMenuDisplay,
+		List<ConfigurationCategoryNavigationItemContributor>
+			configurationCategoryNavigationItemContributors,
+		LiferayPortletResponse liferayPortletResponse,
+		RenderRequest renderRequest, RenderResponse renderResponse) {
+
+		if (ListUtil.isEmpty(configurationCategoryNavigationItemContributors)) {
+			return getHREF(
+				configurationCategoryMenuDisplay, liferayPortletResponse,
+				renderRequest, renderResponse);
+		}
+
+		ConfigurationCategoryNavigationItemContributor
+			configurationCategoryNavigationItemContributor =
+				configurationCategoryNavigationItemContributors.get(0);
+
+		return _getHREF(
+			configurationCategoryNavigationItemContributor.getKey(),
+			liferayPortletResponse);
+	}
 
 	public static String getHREF(
 		ConfigurationCategoryMenuDisplay configurationCategoryMenuDisplay,
@@ -69,13 +92,7 @@ public class ConfigurationCategoryUtil {
 						Objects.equals(
 							configurationCategoryNavigationItemKey, key));
 					navigationItem.setHref(
-						PortletURLBuilder.createRenderURL(
-							liferayPortletResponse
-						).setMVCRenderCommandName(
-							"/configuration_admin/view_configuration_screen"
-						).setParameter(
-							"configurationCategoryNavigationItemKey", key
-						).buildString());
+						_getHREF(key, liferayPortletResponse));
 
 					navigationItem.setLabel(
 						configurationCategoryNavigationItemContributor.getName(
@@ -96,6 +113,20 @@ public class ConfigurationCategoryUtil {
 			});
 
 		return navigationItemList;
+	}
+
+	private static String _getHREF(
+		String configurationCategoryNavigationItemKey,
+		LiferayPortletResponse liferayPortletResponse) {
+
+		return PortletURLBuilder.createRenderURL(
+			liferayPortletResponse
+		).setMVCRenderCommandName(
+			"/configuration_admin/view_configuration_screen"
+		).setParameter(
+			"configurationCategoryNavigationItemKey",
+			configurationCategoryNavigationItemKey
+		).buildString();
 	}
 
 }
