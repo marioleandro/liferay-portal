@@ -342,7 +342,7 @@ test(
 			).toBeVisible();
 
 			await expect(
-				page.getByRole('link', {name: 'Time Zone'})
+				page.getByRole('menuitem', {name: 'Time Zone'})
 			).toBeVisible();
 		});
 
