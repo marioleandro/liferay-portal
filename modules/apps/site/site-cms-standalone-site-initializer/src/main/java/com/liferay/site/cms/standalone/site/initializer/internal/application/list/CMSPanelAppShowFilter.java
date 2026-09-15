@@ -124,7 +124,6 @@ public class CMSPanelAppShowFilter implements PanelAppShowFilter {
 		"com_liferay_monitoring_web_portlet_MonitoringPortlet",
 		"com_liferay_plugins_admin_web_portlet_PluginsAdminPortlet",
 		"com_liferay_portal_instances_web_portlet_PortalInstancesPortlet",
-		"com_liferay_portal_language_override_web_internal_portlet_PLOPortlet",
 		"com_liferay_portal_reports_engine_console_web_admin_portlet_" +
 			"AdminPortlet",
 		"com_liferay_portal_workflow_kaleo_forms_web_portlet_" +
