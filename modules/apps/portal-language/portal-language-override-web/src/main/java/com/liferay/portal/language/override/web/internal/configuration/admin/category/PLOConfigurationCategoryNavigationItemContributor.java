@@ -6,6 +6,7 @@
 package com.liferay.portal.language.override.web.internal.configuration.admin.category;
 
 import com.liferay.configuration.admin.category.ConfigurationCategoryNavigationItemContributor;
+import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -48,6 +49,14 @@ public class PLOConfigurationCategoryNavigationItemContributor
 	@Override
 	public String getName(Locale locale) {
 		return _language.get(locale, "language-overrides");
+	}
+
+	@Override
+	public String getScope() {
+		ExtendedObjectClassDefinition.Scope scope =
+			ExtendedObjectClassDefinition.Scope.COMPANY;
+
+		return scope.getValue();
 	}
 
 	@Override

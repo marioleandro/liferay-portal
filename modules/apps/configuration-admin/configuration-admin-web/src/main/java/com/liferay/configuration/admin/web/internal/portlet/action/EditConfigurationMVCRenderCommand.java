@@ -113,7 +113,8 @@ public class EditConfigurationMVCRenderCommand implements MVCRenderCommand {
 					CONFIGURATION_CATEGORY_NAVIGATION_ITEM_CONTRIBUTORS,
 				_configurationEntryRetriever.
 					getConfigurationCategoryNavigationItemContributors(
-						configurationModel.getCategory()));
+						configurationModel.getCategory(),
+						configurationScopeDisplayContext.getScope()));
 
 			ConfigurationEntry configurationEntry =
 				new ConfigurationModelConfigurationEntry(configurationModel);

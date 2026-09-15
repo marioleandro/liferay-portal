@@ -23,6 +23,8 @@ public interface ConfigurationCategoryNavigationItemContributor {
 
 	public String getName(Locale locale);
 
+	public String getScope();
+
 	public default boolean isVisible() {
 		return true;
 	}

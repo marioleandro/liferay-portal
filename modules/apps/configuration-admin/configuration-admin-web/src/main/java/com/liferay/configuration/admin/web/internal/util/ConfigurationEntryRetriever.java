@@ -45,7 +45,8 @@ public interface ConfigurationEntryRetriever {
 
 	public List<ConfigurationCategoryNavigationItemContributor>
 		getConfigurationCategoryNavigationItemContributors(
-			String configurationCategoryKey);
+			String configurationCategoryKey,
+			ExtendedObjectClassDefinition.Scope scope);
 
 	public List<ConfigurationCategorySectionDisplay>
 		getConfigurationCategorySectionDisplays(

@@ -82,7 +82,7 @@ ExtendedObjectClassDefinition.Scope scope = configurationScopeDisplayContext.get
 					%>
 
 						<li class="list-group-card-item">
-							<a href="<%= ConfigurationCategoryUtil.getDefaultHREF(configurationCategoryMenuDisplay, configurationEntryRetriever.getConfigurationCategoryNavigationItemContributors(configurationCategoryDisplay.getCategoryKey()), liferayPortletResponse, renderRequest, renderResponse) %>">
+							<a href="<%= ConfigurationCategoryUtil.getDefaultHREF(configurationCategoryMenuDisplay, configurationEntryRetriever.getConfigurationCategoryNavigationItemContributors(configurationCategoryDisplay.getCategoryKey(), configurationScopeDisplayContext.getScope()), liferayPortletResponse, renderRequest, renderResponse) %>">
 								<clay:icon
 									symbol="<%= configurationCategoryDisplay.getCategoryIcon() %>"
 								/>

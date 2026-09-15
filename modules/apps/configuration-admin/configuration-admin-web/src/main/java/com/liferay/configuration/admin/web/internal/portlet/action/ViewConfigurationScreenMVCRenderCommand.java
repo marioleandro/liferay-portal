@@ -15,6 +15,7 @@ import com.liferay.configuration.admin.web.internal.display.context.Configuratio
 import com.liferay.configuration.admin.web.internal.display.context.ConfigurationScopeDisplayContextFactory;
 import com.liferay.configuration.admin.web.internal.util.ConfigurationEntryRetriever;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
@@ -52,6 +53,9 @@ public class ViewConfigurationScreenMVCRenderCommand
 		String configurationCategoryNavigationItemKey = ParamUtil.getString(
 			renderRequest, "configurationCategoryNavigationItemKey");
 
+		ConfigurationScopeDisplayContext configurationScopeDisplayContext =
+			ConfigurationScopeDisplayContextFactory.create(renderRequest);
+
 		String configurationCategoryKey = null;
 
 		if (Validator.isNull(configurationCategoryNavigationItemKey)) {
@@ -62,14 +66,12 @@ public class ViewConfigurationScreenMVCRenderCommand
 		else {
 			configurationCategoryKey =
 				_setConfigurationCategoryNavigationItemContributorAttributeAndGetCategoryKey(
-					configurationCategoryNavigationItemKey, renderRequest);
+					configurationCategoryNavigationItemKey, renderRequest,
+					configurationScopeDisplayContext.getScope());
 		}
 
 		ThemeDisplay themeDisplay = (ThemeDisplay)renderRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
-
-		ConfigurationScopeDisplayContext configurationScopeDisplayContext =
-			ConfigurationScopeDisplayContextFactory.create(renderRequest);
 
 		renderRequest.setAttribute(
 			ConfigurationAdminWebKeys.CONFIGURATION_CATEGORY_MENU_DISPLAY,
@@ -83,7 +85,8 @@ public class ViewConfigurationScreenMVCRenderCommand
 				CONFIGURATION_CATEGORY_NAVIGATION_ITEM_CONTRIBUTORS,
 			_configurationEntryRetriever.
 				getConfigurationCategoryNavigationItemContributors(
-					configurationCategoryKey));
+					configurationCategoryKey,
+					configurationScopeDisplayContext.getScope()));
 
 		return "/view_configuration_screen.jsp";
 	}
@@ -91,7 +94,8 @@ public class ViewConfigurationScreenMVCRenderCommand
 	private String
 			_setConfigurationCategoryNavigationItemContributorAttributeAndGetCategoryKey(
 				String configurationCategoryNavigationItemKey,
-				RenderRequest renderRequest)
+				RenderRequest renderRequest,
+				ExtendedObjectClassDefinition.Scope scope)
 		throws PortletException {
 
 		ConfigurationCategoryNavigationItemContributor
@@ -101,7 +105,9 @@ public class ViewConfigurationScreenMVCRenderCommand
 						configurationCategoryNavigationItemKey);
 
 		if ((configurationCategoryNavigationItemContributor == null) ||
-			!configurationCategoryNavigationItemContributor.isVisible()) {
+			!configurationCategoryNavigationItemContributor.isVisible() ||
+			!scope.equals(
+				configurationCategoryNavigationItemContributor.getScope())) {
 
 			throw new PortletException(
 				StringBundler.concat(

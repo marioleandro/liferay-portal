@@ -140,7 +140,8 @@ public class ConfigurationEntryRetrieverImpl
 	@Override
 	public List<ConfigurationCategoryNavigationItemContributor>
 		getConfigurationCategoryNavigationItemContributors(
-			String configurationCategoryKey) {
+			String configurationCategoryKey,
+			ExtendedObjectClassDefinition.Scope scope) {
 
 		List<ConfigurationCategoryNavigationItemContributor>
 			configurationCategoryNavigationItemContributors =
@@ -153,7 +154,10 @@ public class ConfigurationEntryRetrieverImpl
 
 		return ListUtil.filter(
 			configurationCategoryNavigationItemContributors,
-			ConfigurationCategoryNavigationItemContributor::isVisible);
+			configurationCategoryNavigationItemContributor ->
+				configurationCategoryNavigationItemContributor.isVisible() &&
+				scope.equals(
+					configurationCategoryNavigationItemContributor.getScope()));
 	}
 
 	@Override
