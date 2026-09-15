@@ -100,6 +100,10 @@ public class ConfigurationCategoryUtil {
 				});
 		}
 
+		if (configurationCategoryMenuDisplay.isEmpty()) {
+			return navigationItemList;
+		}
+
 		navigationItemList.add(
 			navigationItem -> {
 				navigationItem.setActive(

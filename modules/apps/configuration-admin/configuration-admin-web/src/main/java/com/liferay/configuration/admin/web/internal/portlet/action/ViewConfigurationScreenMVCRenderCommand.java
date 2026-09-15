@@ -5,6 +5,7 @@
 
 package com.liferay.configuration.admin.web.internal.portlet.action;
 
+import com.liferay.configuration.admin.category.ConfigurationCategory;
 import com.liferay.configuration.admin.category.ConfigurationCategoryNavigationItemContributor;
 import com.liferay.configuration.admin.constants.ConfigurationAdminPortletKeys;
 import com.liferay.configuration.admin.display.ConfigurationScreen;
@@ -116,12 +117,26 @@ public class ViewConfigurationScreenMVCRenderCommand
 					"\" is not accessible"));
 		}
 
+		String configurationCategoryKey =
+			configurationCategoryNavigationItemContributor.getCategoryKey();
+
+		ConfigurationCategory configurationCategory =
+			_configurationEntryRetriever.getConfigurationCategory(
+				configurationCategoryKey);
+
+		if (configurationCategory == null) {
+			throw new PortletException(
+				StringBundler.concat(
+					"The configuration category \"", configurationCategoryKey,
+					"\" is not accessible"));
+		}
+
 		renderRequest.setAttribute(
 			ConfigurationAdminWebKeys.
 				CONFIGURATION_CATEGORY_NAVIGATION_ITEM_CONTRIBUTOR,
 			configurationCategoryNavigationItemContributor);
 
-		return configurationCategoryNavigationItemContributor.getCategoryKey();
+		return configurationCategoryKey;
 	}
 
 	private String _setConfigurationScreenAttributesAndGetCategoryKey(

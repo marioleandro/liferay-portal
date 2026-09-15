@@ -76,13 +76,15 @@ ExtendedObjectClassDefinition.Scope scope = configurationScopeDisplayContext.get
 					for (ConfigurationCategoryDisplay configurationCategoryDisplay : configurationCategorySectionDisplay.getConfigurationCategoryDisplays()) {
 						ConfigurationCategoryMenuDisplay configurationCategoryMenuDisplay = configurationEntryRetriever.getConfigurationCategoryMenuDisplay(configurationCategoryDisplay.getCategoryKey(), themeDisplay.getLanguageId(), configurationScopeDisplayContext.getScope(), configurationScopeDisplayContext.getScopePK());
 
-						if (configurationCategoryMenuDisplay.isEmpty()) {
+						List<ConfigurationCategoryNavigationItemContributor> configurationCategoryNavigationItemContributors = configurationEntryRetriever.getConfigurationCategoryNavigationItemContributors(configurationCategoryDisplay.getCategoryKey(), configurationScopeDisplayContext.getScope());
+
+						if (configurationCategoryMenuDisplay.isEmpty() && ListUtil.isEmpty(configurationCategoryNavigationItemContributors)) {
 							continue;
 						}
 					%>
 
 						<li class="list-group-card-item">
-							<a href="<%= ConfigurationCategoryUtil.getDefaultHREF(configurationCategoryMenuDisplay, configurationEntryRetriever.getConfigurationCategoryNavigationItemContributors(configurationCategoryDisplay.getCategoryKey(), configurationScopeDisplayContext.getScope()), liferayPortletResponse, renderRequest, renderResponse) %>">
+							<a href="<%= ConfigurationCategoryUtil.getDefaultHREF(configurationCategoryMenuDisplay, configurationCategoryNavigationItemContributors, liferayPortletResponse, renderRequest, renderResponse) %>">
 								<clay:icon
 									symbol="<%= configurationCategoryDisplay.getCategoryIcon() %>"
 								/>
