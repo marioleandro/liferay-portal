@@ -237,8 +237,8 @@ public class StyleBookEntryLocalServiceImpl
 	public StyleBookEntry fetchDefaultStyleBookEntry(
 		long groupId, String themeId) {
 
-		return styleBookEntryPersistence.fetchByG_D_T_First(
-			groupId, true, themeId, null);
+		return styleBookEntryPersistence.fetchByG_D_T_Head_First(
+			groupId, true, themeId, true, null);
 	}
 
 	@Override
@@ -455,10 +455,8 @@ public class StyleBookEntryLocalServiceImpl
 			return null;
 		}
 
-		StyleBookEntry oldDefaultStyleBookEntry =
-			styleBookEntryPersistence.fetchByG_D_T_First(
-				styleBookEntry.getGroupId(), true, styleBookEntry.getThemeId(),
-				null);
+		StyleBookEntry oldDefaultStyleBookEntry = fetchDefaultStyleBookEntry(
+			styleBookEntry.getGroupId(), styleBookEntry.getThemeId());
 
 		if (defaultStyleBookEntry && (oldDefaultStyleBookEntry != null) &&
 			(oldDefaultStyleBookEntry.getStyleBookEntryId() !=

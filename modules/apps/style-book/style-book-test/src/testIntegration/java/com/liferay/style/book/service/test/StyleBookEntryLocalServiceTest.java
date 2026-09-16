@@ -200,6 +200,58 @@ public class StyleBookEntryLocalServiceTest {
 	}
 
 	@Test
+	public void testUpdateDefaultStyleBookEntryWithDraft() throws Exception {
+		String themeId = RandomTestUtil.randomString();
+
+		StyleBookEntry styleBookEntry1 =
+			_styleBookEntryLocalService.addStyleBookEntry(
+				RandomTestUtil.randomString(), TestPropsValues.getUserId(),
+				_group.getGroupId(), false, null, RandomTestUtil.randomString(),
+				null, themeId, _serviceContext);
+
+		StyleBookEntry styleBookEntry2 =
+			_styleBookEntryLocalService.addStyleBookEntry(
+				RandomTestUtil.randomString(), TestPropsValues.getUserId(),
+				_group.getGroupId(), false, null, RandomTestUtil.randomString(),
+				null, themeId, _serviceContext);
+
+		_styleBookEntryLocalService.getDraft(styleBookEntry1);
+
+		_styleBookEntryLocalService.updateDefaultStyleBookEntry(
+			styleBookEntry1.getStyleBookEntryId(), true);
+		_styleBookEntryLocalService.updateDefaultStyleBookEntry(
+			styleBookEntry2.getStyleBookEntryId(), true);
+
+		int defaultStyleBookEntriesCount = 0;
+
+		for (StyleBookEntry styleBookEntry :
+				_styleBookEntryLocalService.getStyleBookEntries(
+					_group.getGroupId(), themeId)) {
+
+			if (styleBookEntry.isDefaultStyleBookEntry()) {
+				defaultStyleBookEntriesCount++;
+			}
+		}
+
+		Assert.assertEquals(1, defaultStyleBookEntriesCount);
+
+		styleBookEntry1 = _styleBookEntryLocalService.getStyleBookEntry(
+			styleBookEntry1.getStyleBookEntryId());
+
+		Assert.assertFalse(styleBookEntry1.isDefaultStyleBookEntry());
+
+		styleBookEntry2 = _styleBookEntryLocalService.getStyleBookEntry(
+			styleBookEntry2.getStyleBookEntryId());
+
+		Assert.assertTrue(styleBookEntry2.isDefaultStyleBookEntry());
+
+		StyleBookEntry draftStyleBookEntry =
+			_styleBookEntryLocalService.getDraft(styleBookEntry1);
+
+		Assert.assertFalse(draftStyleBookEntry.isDefaultStyleBookEntry());
+	}
+
+	@Test
 	public void testUpdateFrontendTokenDefinition() throws Exception {
 		StyleBookEntry styleBookEntry =
 			_styleBookEntryLocalService.addStyleBookEntry(
