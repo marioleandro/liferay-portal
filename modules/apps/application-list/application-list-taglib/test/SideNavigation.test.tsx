@@ -18,6 +18,8 @@ import React from 'react';
 
 import {SideNavigation} from '../src/main/resources/META-INF/resources/js';
 import {SideNavigationItem} from '../src/main/resources/META-INF/resources/js/types/SideNavigation';
+import mockResizeObserver from './__lib__/mockResizeObserver';
+import mockScrollGeometry from './__lib__/mockScrollGeometry';
 
 jest.mock('frontend-js-web', () => ({
 	...(jest.requireActual('frontend-js-web') as any),
@@ -27,6 +29,8 @@ jest.mock('frontend-js-web', () => ({
 configure({
 	testIdAttribute: 'data-qa-id',
 });
+
+const resizeObserver = mockResizeObserver();
 
 const NAVIGATION_ITEMS = {
 	assets: [
@@ -618,5 +622,86 @@ describe('SideNavigation', () => {
 		fireEvent.focus(searchInput);
 
 		await waitFor(() => expect(fetch).toHaveBeenCalledTimes(2));
+	});
+
+	describe('scope item shadow', () => {
+		const geometry = mockScrollGeometry(resizeObserver);
+
+		const PANEL = {'.side-navigation-scroller': 100};
+		const PINNED = {'.side-navigation-scope-item': 100};
+		const SCROLLED_PAST = {'.side-navigation-scope-item': 400};
+
+		const shadow = (container: HTMLElement) =>
+			container.querySelector('.side-navigation-scroll');
+
+		it('leaves the panel flat while it has not been scrolled', () => {
+			geometry.place({...PANEL, ...PINNED});
+
+			const {container} = renderComponent({items: ITEMS_WITH_SCOPES});
+
+			geometry.scroll(0);
+
+			expect(shadow(container)).not.toHaveClass(
+				'side-navigation-scroll-stuck'
+			);
+		});
+
+		it('shadows the panel once a scope item pins to the top', () => {
+			geometry.place({...PANEL, ...SCROLLED_PAST});
+
+			const {container} = renderComponent({items: ITEMS_WITH_SCOPES});
+
+			geometry.place(PINNED);
+			geometry.scroll(300);
+
+			expect(shadow(container)).toHaveClass(
+				'side-navigation-scroll-stuck'
+			);
+		});
+
+		it('settles the panel once every scope item scrolls away again', () => {
+			geometry.place({...PANEL, ...PINNED});
+
+			const {container} = renderComponent({items: ITEMS_WITH_SCOPES});
+
+			geometry.scroll(300);
+			geometry.place(SCROLLED_PAST);
+			geometry.scroll(300);
+
+			expect(shadow(container)).not.toHaveClass(
+				'side-navigation-scroll-stuck'
+			);
+		});
+
+		it('refreshes the panel when it is resized without scrolling', () => {
+			geometry.place({...PANEL, ...PINNED});
+
+			const {container} = renderComponent({items: ITEMS_WITH_SCOPES});
+
+			const root = container.querySelector('.side-navigation-scroller')!;
+
+			root.scrollTop = 300;
+
+			geometry.resizePanel();
+
+			expect(shadow(container)).toHaveClass(
+				'side-navigation-scroll-stuck'
+			);
+		});
+
+		it('settles the panel when a category expands above a pinned item', () => {
+			geometry.place({...PANEL, ...PINNED});
+
+			const {container} = renderComponent({items: ITEMS_WITH_SCOPES});
+
+			geometry.scroll(300);
+
+			geometry.place(SCROLLED_PAST);
+			geometry.resizeContent();
+
+			expect(shadow(container)).not.toHaveClass(
+				'side-navigation-scroll-stuck'
+			);
+		});
 	});
 });

@@ -1,6 +1,8 @@
 @import 'atlas-custom-properties/_variables';
 @import 'cadmin-variables';
 
+$side-navigation-scope-item-height: 2.75rem;
+
 @mixin side-navigation-shimmer {
 	overflow: hidden;
 	position: relative;
@@ -27,6 +29,8 @@
 		--menubar-primary-collapse-icon-font-size: 0.875rem;
 		--menubar-primary-collapse-icon-font-weight: 400;
 		--menubar-primary-collapse-icon-text-transform: none;
+
+		scroll-margin-top: $side-navigation-scope-item-height;
 
 		.collapse-icon-closed,
 		.collapse-icon-open {
@@ -59,6 +63,15 @@
 		border-right: 0.5px solid $secondary-l0;
 		box-shadow: none;
 
+		overflow: hidden;
+
+		.sidebar-body {
+			flex: 1;
+			min-height: 0;
+			overflow: auto;
+			padding-top: 0;
+		}
+
 		&.skeleton {
 			@include side-navigation-shimmer;
 
@@ -84,8 +97,15 @@
 
 	.side-navigation-scope-item {
 		align-items: center;
+
+		background-color: $light-l1;
 		display: flex;
-		padding: 0.8125rem 1rem;
+
+		height: $side-navigation-scope-item-height;
+		padding: 0 1rem;
+		position: sticky;
+		top: 0;
+		z-index: 1;
 
 		.label {
 			border-color: transparent;
@@ -111,6 +131,26 @@
 	.side-navigation-scope-zone-system {
 		--menubar-primary-nav-link-active-class-background-color: #{$pink-l5};
 		--menubar-primary-nav-link-active-class-highlight-background-color: #{$pink-d1};
+	}
+
+	.side-navigation-scroll {
+		display: flex;
+		flex: 1;
+		min-height: 0;
+
+		overflow: hidden;
+		position: relative;
+	}
+
+	.side-navigation-scroll-stuck::after {
+		box-shadow: 0 4px 24px hsl(from #{$black} h s l / 0.08);
+		content: '';
+		height: $side-navigation-scope-item-height;
+		left: 0;
+		pointer-events: none;
+		position: absolute;
+		right: 0;
+		top: 0;
 	}
 
 	.side-navigation-section-item > .nav-link {
