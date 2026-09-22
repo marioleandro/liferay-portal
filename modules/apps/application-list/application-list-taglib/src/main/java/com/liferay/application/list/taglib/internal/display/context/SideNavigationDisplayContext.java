@@ -175,7 +175,18 @@ public class SideNavigationDisplayContext {
 				_panelCategory.getKey(), _themeDisplay);
 
 		for (PanelCategory childPanelCategory : childPanelCategories) {
-			expandedKeys.add(childPanelCategory.getKey());
+			if (!_scopes.containsKey(childPanelCategory.getKey())) {
+				expandedKeys.add(childPanelCategory.getKey());
+
+				continue;
+			}
+
+			for (PanelCategory scopeChildPanelCategory :
+					_panelCategoryHelper.getChildPanelCategories(
+						childPanelCategory.getKey(), _themeDisplay)) {
+
+				expandedKeys.add(scopeChildPanelCategory.getKey());
+			}
 		}
 
 		return expandedKeys;
@@ -187,38 +198,88 @@ public class SideNavigationDisplayContext {
 			_panelCategory.getKey());
 	}
 
+	private Map<String, Object> _getGroupPropsItem(
+			PanelCategory panelCategory, String scope)
+		throws Exception {
+
+		List<Map<String, Object>> propsItems = _getPropsItems(
+			panelCategory, scope);
+
+		if (propsItems.isEmpty()) {
+			return null;
+		}
+
+		return HashMapBuilder.<String, Object>put(
+			"id", panelCategory.getKey()
+		).put(
+			"items", propsItems
+		).put(
+			"label", panelCategory.getLabel(_themeDisplay.getLocale())
+		).put(
+			"scope", () -> scope
+		).build();
+	}
+
 	private List<Map<String, Object>> _getPropsItems() throws Exception {
-		List<Map<String, Object>> propsItems = new ArrayList<>();
+		List<Map<String, Object>> propsItems = new ArrayList<>(
+			_getPropsItems(_panelCategory, null));
 
-		propsItems.addAll(_getPropsItems(_panelCategory));
+		List<PanelCategory> childPanelCategories =
+			_panelCategoryHelper.getChildPanelCategories(
+				_panelCategory.getKey(), _themeDisplay);
 
-		for (PanelCategory childPanelCategory :
-				_panelCategoryHelper.getChildPanelCategories(
-					_panelCategory.getKey(), _themeDisplay)) {
+		String scope = null;
 
-			List<Map<String, Object>> childrenPropsItems = _getPropsItems(
-				childPanelCategory);
+		for (PanelCategory childPanelCategory : childPanelCategories) {
+			String childPanelCategoryScope = _scopes.get(
+				childPanelCategory.getKey());
 
-			if (childrenPropsItems.isEmpty()) {
+			if (childPanelCategoryScope == null) {
 				continue;
 			}
+
+			List<Map<String, Object>> scopePropsItems = _getScopePropsItems(
+				childPanelCategory, childPanelCategoryScope);
+
+			if (scopePropsItems.isEmpty()) {
+				continue;
+			}
+
+			scope = childPanelCategoryScope;
 
 			propsItems.add(
 				HashMapBuilder.<String, Object>put(
 					"id", childPanelCategory.getKey()
 				).put(
-					"items", childrenPropsItems
-				).put(
 					"label",
 					childPanelCategory.getLabel(_themeDisplay.getLocale())
+				).put(
+					"scope", scope
+				).put(
+					"scopeMarker", true
 				).build());
+
+			propsItems.addAll(scopePropsItems);
+		}
+
+		for (PanelCategory childPanelCategory : childPanelCategories) {
+			if (_scopes.containsKey(childPanelCategory.getKey())) {
+				continue;
+			}
+
+			Map<String, Object> groupPropsItem = _getGroupPropsItem(
+				childPanelCategory, scope);
+
+			if (groupPropsItem != null) {
+				propsItems.add(groupPropsItem);
+			}
 		}
 
 		return propsItems;
 	}
 
 	private List<Map<String, Object>> _getPropsItems(
-			PanelCategory panelCategory)
+			PanelCategory panelCategory, String scope)
 		throws Exception {
 
 		List<Map<String, Object>> propsItems = new ArrayList<>();
@@ -243,7 +304,31 @@ public class SideNavigationDisplayContext {
 					"label", panelApp.getLabel(_themeDisplay.getLocale())
 				).put(
 					"leadingIcon", panelApp.getIcon()
+				).put(
+					"scope", () -> scope
 				).build());
+		}
+
+		return propsItems;
+	}
+
+	private List<Map<String, Object>> _getScopePropsItems(
+			PanelCategory panelCategory, String scope)
+		throws Exception {
+
+		List<Map<String, Object>> propsItems = new ArrayList<>(
+			_getPropsItems(panelCategory, scope));
+
+		for (PanelCategory childPanelCategory :
+				_panelCategoryHelper.getChildPanelCategories(
+					panelCategory.getKey(), _themeDisplay)) {
+
+			Map<String, Object> groupPropsItem = _getGroupPropsItem(
+				childPanelCategory, scope);
+
+			if (groupPropsItem != null) {
+				propsItems.add(groupPropsItem);
+			}
 		}
 
 		return propsItems;
@@ -257,6 +342,11 @@ public class SideNavigationDisplayContext {
 
 	private static final Snapshot<ItemSelector> _itemSelectorSnapshot =
 		new Snapshot<>(SideNavigationDisplayContext.class, ItemSelector.class);
+	private static final Map<String, String> _scopes = HashMapBuilder.put(
+		PanelCategoryKeys.CONTROL_PANEL_INSTANCE, "instance"
+	).put(
+		PanelCategoryKeys.CONTROL_PANEL_SYSTEM, "system"
+	).build();
 
 	private final HttpServletRequest _httpServletRequest;
 	private final PanelAppRegistry _panelAppRegistry;
