@@ -34,6 +34,15 @@ public interface PanelCategoryKeys {
 	public static final String CONTROL_PANEL_CONFIGURATION =
 		PortletCategoryKeys.CONTROL_PANEL_CONFIGURATION;
 
+	/**
+	 * The root scope holding every application scoped to the current virtual
+	 * instance. Shares its value with {@link #CONTROL_PANEL_CONFIGURATION} so
+	 * that applications and plugins pointing at the dismantled "Configuration"
+	 * category keep rendering inside this scope.
+	 */
+	public static final String CONTROL_PANEL_INSTANCE =
+		PortletCategoryKeys.CONTROL_PANEL_CONFIGURATION;
+
 	public static final String CONTROL_PANEL_MARKETPLACE =
 		"control_panel.marketplace";
 
