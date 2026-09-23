@@ -6067,6 +6067,32 @@
 		"to": "fetchLayoutPageTemplateEntry(param#0#, 0L, param#1#, param#2#)"
 	},
 	{
+		"from": "PanelCategoryKeys.CONTROL_PANEL_CONFIGURATION",
+		"issueKey": "LPD-100172",
+		"to": "PanelCategoryKeys.CONTROL_PANEL_INSTANCE",
+		"validExtensions": [
+			"java",
+			"jsp"
+		]
+	},
+	{
+		"from": "PortletCategoryKeys.CONTROL_PANEL_CONFIGURATION",
+		"issueKey": "LPD-100172",
+		"to": "PortletCategoryKeys.CONTROL_PANEL_INSTANCE",
+		"validExtensions": [
+			"java",
+			"jsp"
+		]
+	},
+	{
+		"from": "regex:\\bcontrol_panel\\.configuration(?![\\w.-])",
+		"issueKey": "LPD-100172",
+		"to": "control_panel.instance",
+		"validExtensions": [
+			"json"
+		]
+	},
+	{
 		"from": "PanelCategoryKeys.APPLICATIONS_MENU_APPLICATIONS_BATCH_PLANNER",
 		"issueKey": "LPD-100257",
 		"to": "PanelCategoryKeys.APPLICATIONS_MENU_APPLICATIONS_DEVELOPER_INTEGRATION",
