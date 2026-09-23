@@ -1973,3 +1973,36 @@ In a JSON object definition payload, the `panelCategoryKey` that points to a del
 ### Why was this change made?
 
 The Applications Panel has been reorganized by feature area, rather than by arbitrary splits and groups containing a single application. Panel Category groups left empty by this change have been removed and are no longer available as destinations for OSGi applications or object definitions.
+
+---------------------------------------
+
+## Replaced the Configuration Panel Category with Instance
+- **Date:** 2026-Sep-23
+- **JIRA Ticket:** [LPD-100172](https://liferay.atlassian.net/browse/LPD-100172)
+
+### What changed?
+
+The Control Panel root no longer has a Configuration group. The `control_panel.configuration` panel category is deleted and `control_panel.instance` takes its place, rendered as the Instance root scope and labeled with the name of the current virtual instance. `PanelCategoryKeys.CONTROL_PANEL_CONFIGURATION` and `PortletCategoryKeys.CONTROL_PANEL_CONFIGURATION` are both removed, replaced by `CONTROL_PANEL_INSTANCE` on each.
+
+### Who is affected?
+
+Administrators with a custom object in Configuration. The object **moved**, it was not deleted: it is under Control Panel > Instance. An upgrade process repoints every object definition that stored the old key.
+
+Developers whose module or client extension names a removed constant or its literal key value. A module that is never rebuilt keeps a key that names nothing, and its application stays out of the menu until it is recompiled.
+
+Nobody with a WAR plugin that declares `configuration`, `portal` or `server` as its `control-panel-entry-category`. Those legacy values are mapped to the new key, as is the full `control_panel.configuration` value, so such a plugin keeps rendering with no change.
+
+### How should I update my code?
+
+Point the removed key at its replacement:
+
+| Removed Key | Replacement |
+| --- | --- |
+| `PanelCategoryKeys.CONTROL_PANEL_CONFIGURATION` | `PanelCategoryKeys.CONTROL_PANEL_INSTANCE` |
+| `PortletCategoryKeys.CONTROL_PANEL_CONFIGURATION` | `PortletCategoryKeys.CONTROL_PANEL_INSTANCE` |
+
+In a JSON object definition payload, a `panelCategoryKey` of `control_panel.configuration` should be rewritten to `control_panel.instance`.
+
+### Why was this change made?
+
+Configuration mixed settings that apply to the whole installation with settings that apply to one virtual instance, which the tree test and expert interviews identified as the largest source of confusion in the Control Panel. The root is being rebuilt around that distinction, as a System scope and an Instance scope, and the group that caused the ambiguity is the one that becomes Instance.
