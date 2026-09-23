@@ -8,8 +8,8 @@ package com.liferay.address.web.internal.application.list;
 import com.liferay.address.web.internal.constants.AddressPortletKeys;
 import com.liferay.application.list.BasePanelApp;
 import com.liferay.application.list.PanelApp;
+import com.liferay.application.list.constants.PanelCategoryKeys;
 import com.liferay.portal.kernel.model.Portlet;
-import com.liferay.portal.kernel.util.PortletCategoryKeys;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -20,7 +20,7 @@ import org.osgi.service.component.annotations.Reference;
 @Component(
 	property = {
 		"panel.app.order:Integer=1100",
-		"panel.category.key=" + PortletCategoryKeys.CONTROL_PANEL_CONFIGURATION
+		"panel.category.key=" + PanelCategoryKeys.CONTROL_PANEL_INSTANCE
 	},
 	service = PanelApp.class
 )

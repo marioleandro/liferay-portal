@@ -62,10 +62,12 @@ public class PortletCategoryUtil {
 			return PortletCategoryKeys.CONTROL_PANEL_APPS;
 		}
 		else if (Objects.equals(legacyPortletCategoryKey, "configuration") ||
+				 Objects.equals(
+					 legacyPortletCategoryKey, "control_panel.configuration") ||
 				 Objects.equals(legacyPortletCategoryKey, "portal") ||
 				 Objects.equals(legacyPortletCategoryKey, "server")) {
 
-			return PortletCategoryKeys.CONTROL_PANEL_CONFIGURATION;
+			return PortletCategoryKeys.CONTROL_PANEL_INSTANCE;
 		}
 		else if (Objects.equals(legacyPortletCategoryKey, "content")) {
 			return PortletCategoryKeys.SITE_ADMINISTRATION_CONTENT;

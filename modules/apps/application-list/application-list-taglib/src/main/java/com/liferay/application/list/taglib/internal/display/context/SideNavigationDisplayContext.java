@@ -347,7 +347,7 @@ public class SideNavigationDisplayContext {
 	private static final Snapshot<ItemSelector> _itemSelectorSnapshot =
 		new Snapshot<>(SideNavigationDisplayContext.class, ItemSelector.class);
 	private static final Map<String, String> _scopes = HashMapBuilder.put(
-		PanelCategoryKeys.CONTROL_PANEL_CONFIGURATION, "instance"
+		PanelCategoryKeys.CONTROL_PANEL_INSTANCE, "instance"
 	).put(
 		PanelCategoryKeys.CONTROL_PANEL_SYSTEM, "system"
 	).build();

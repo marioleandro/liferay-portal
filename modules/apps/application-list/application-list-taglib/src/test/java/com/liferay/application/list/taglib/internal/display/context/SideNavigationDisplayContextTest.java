@@ -172,10 +172,10 @@ public class SideNavigationDisplayContextTest {
 
 		_setUpChildPanelCategories(
 			PanelCategoryKeys.CONTROL_PANEL,
-			_createPanelCategory(PanelCategoryKeys.CONTROL_PANEL_CONFIGURATION),
+			_createPanelCategory(PanelCategoryKeys.CONTROL_PANEL_INSTANCE),
 			_createPanelCategory(PanelCategoryKeys.CONTROL_PANEL_USERS));
 		_setUpPanelApps(
-			PanelCategoryKeys.CONTROL_PANEL_CONFIGURATION,
+			PanelCategoryKeys.CONTROL_PANEL_INSTANCE,
 			_createPanelApp("instanceSettings"));
 		_setUpPanelApps(
 			PanelCategoryKeys.CONTROL_PANEL_USERS, _createPanelApp("roles"));

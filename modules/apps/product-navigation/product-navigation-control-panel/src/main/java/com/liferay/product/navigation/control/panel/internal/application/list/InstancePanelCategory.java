@@ -32,7 +32,7 @@ public class InstancePanelCategory extends BasePanelCategory {
 
 	@Override
 	public String getKey() {
-		return PanelCategoryKeys.CONTROL_PANEL_CONFIGURATION;
+		return PanelCategoryKeys.CONTROL_PANEL_INSTANCE;
 	}
 
 	@Override

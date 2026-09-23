@@ -58,7 +58,7 @@ const CONTROL_PANEL_ITEMS: Array<SideNavigationItem> = [
 	app('server_admin', 'Server Administration', 'system'),
 	app('gogo_shell', 'Gogo Shell', 'system'),
 	{
-		id: 'control_panel.configuration',
+		id: 'control_panel.instance',
 		label: 'Instance: Liferay',
 		scope: 'instance',
 		scopeMarker: true,
