@@ -800,6 +800,15 @@ public class ObjectServiceUpgradeStepRegistrator
 			"13.9.0", "13.10.0",
 			UpgradeProcessFactory.addColumns(
 				"ObjectDefinition", "description STRING null"));
+
+		registry.register(
+			"13.10.0", "13.11.0",
+			UpgradeProcessFactory.runSQL(
+				StringBundler.concat(
+					"update ObjectDefinition set panelCategoryKey = '",
+					PanelCategoryKeys.CONTROL_PANEL_INSTANCE,
+					"' where panelCategoryKey = ",
+					"'control_panel.configuration'")));
 	}
 
 	private static final String[] _REMOVED_PANEL_CATEGORY_KEYS = {
