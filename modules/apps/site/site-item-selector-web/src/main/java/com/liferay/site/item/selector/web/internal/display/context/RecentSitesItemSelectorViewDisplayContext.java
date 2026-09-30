@@ -77,7 +77,9 @@ public class RecentSitesItemSelectorViewDisplayContext
 		for (Group group :
 				_recentGroupManager.getRecentGroups(httpServletRequest)) {
 
-			if (!ArrayUtil.contains(
+			if ((groupItemSelectorCriterion.isIncludeCompany() ||
+				 !group.isCompany()) &&
+				!ArrayUtil.contains(
 					groupItemSelectorCriterion.getExcludedGroupIds(),
 					group.getGroupId()) &&
 				GroupPermissionUtil.contains(

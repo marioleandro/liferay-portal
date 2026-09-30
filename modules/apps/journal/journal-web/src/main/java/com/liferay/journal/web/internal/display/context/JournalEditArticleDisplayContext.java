@@ -299,16 +299,15 @@ public class JournalEditArticleDisplayContext {
 						RecentGroupManagerUtil.getRecentGroupManager();
 
 					List<Group> recentGroups = ListUtil.subList(
-						recentGroupManager.getRecentGroups(_httpServletRequest),
+						ListUtil.filter(
+							recentGroupManager.getRecentGroups(
+								_httpServletRequest),
+							group -> !group.isCompany()),
 						0, _MAX_SITES);
 
 					JSONArray jsonArray = JSONFactoryUtil.createJSONArray();
 
 					for (Group group : recentGroups) {
-						if (group.isCompany()) {
-							continue;
-						}
-
 						jsonArray.put(
 							JSONUtil.put(
 								"groupId", group.getGroupId()
