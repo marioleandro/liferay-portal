@@ -13,6 +13,9 @@
 			"@liferay/frontend-data-set-web": [
 				"../../../../../../../modules/apps/frontend-data-set/frontend-data-set-web/src/main/resources/META-INF/resources/index.ts"
 			],
+			"@liferay/product-navigation-unified-web": [
+				"../../../../../../../modules/apps/product-navigation/product-navigation-unified-web/src/main/resources/META-INF/resources/js/index.ts"
+			],
 			"react": [
 				"../../../node_modules/@types/react/index"
 			],

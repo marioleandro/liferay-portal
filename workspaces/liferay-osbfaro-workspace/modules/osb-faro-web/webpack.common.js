@@ -46,6 +46,8 @@ const config = {
 			'@clayui/icon-runtime': '@clayui/icon',
 			'@liferay/frontend-data-set-web':
 				'/o/frontend-data-set-web/__liferay__/index.js',
+			'@liferay/product-navigation-unified-web':
+				'/o/product-navigation-unified-web/__liferay__/index.js',
 			react: 'react',
 			'react-dom': 'react-dom',
 		},
