@@ -1,3 +1,18 @@
+[#assign user = themeDisplay.getUser() /]
+[#assign userMenuItemsURL = "" /]
+
+[#if themeDisplay.isSignedIn() && portletURLFactory?? && request??]
+	[#assign personalMenuURL = portletURLFactory.create(request, "com_liferay_product_navigation_personal_menu_web_internal_portlet_PersonalMenuPortlet", "RESOURCE_PHASE") /]
+	[#assign void = personalMenuURL.setResourceID("/product_navigation_personal_menu/get_personal_menu_items") /]
+	[#assign void = personalMenuURL.setParameter("currentURL", themeDisplay.getURLCurrent()) /]
+	[#assign userMenuItemsURL = personalMenuURL.toString() /]
+[/#if]
+
+<div class="unified-navigation-roots" data-page-title="${themeDisplay.getLayout().getName(locale)?html}" data-user-menu-items-url="${userMenuItemsURL?html}" data-user-name="${user.getFullName()?html}" data-user-portrait-url="${(user.getPortraitId() > 0)?then(user.getPortraitURL(themeDisplay), '')?html}">
+	<div class="unified-navigation-top-bar-root"></div>
+	<div class="unified-navigation-sidebar-root"></div>
+</div>
+
 <div class="sticky-top top-bar">
 	<lfr-drop-zone data-lfr-drop-zone-id="topBar"></lfr-drop-zone>
 </div>

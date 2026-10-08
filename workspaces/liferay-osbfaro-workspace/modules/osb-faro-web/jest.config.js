@@ -640,6 +640,8 @@ module.exports = {
 		'^@clayui/icon-runtime$': '@clayui/icon',
 		'^@liferay/frontend-data-set-web$':
 			'<rootDir>/src/main/js/test/__mocks__/@liferay/frontend-data-set-web.js',
+		'^@liferay/product-navigation-unified-web$':
+			'<rootDir>/src/main/js/test/__mocks__/@liferay/product-navigation-unified-web.js',
 		'^@react-dnd/invariant$':
 			'<rootDir>/src/main/js/test/__mocks__/@react-dnd/invariant.js',
 		'^assets(.*)$': '<rootDir>/src/main/js/assets$1',

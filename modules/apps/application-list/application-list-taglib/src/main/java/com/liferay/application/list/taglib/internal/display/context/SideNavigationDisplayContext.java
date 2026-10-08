@@ -14,6 +14,7 @@ import com.liferay.application.list.display.context.logic.PanelCategoryHelper;
 import com.liferay.item.selector.ItemSelector;
 import com.liferay.item.selector.criteria.URLItemSelectorReturnType;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.portlet.LiferayPortletURL;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactoryUtil;
@@ -22,6 +23,7 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.SessionClicks;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.product.navigation.personal.menu.constants.PersonalMenuPortletKeys;
 import com.liferay.product.navigation.product.menu.constants.ProductNavigationProductMenuPortletKeys;
 import com.liferay.site.item.selector.SiteItemSelectorCriterion;
 
@@ -138,6 +140,8 @@ public class SideNavigationDisplayContext {
 						itemSelectedEventName, siteItemSelectorCriterion));
 			}
 		).put(
+			"userMenu", this::_getUserMenu
+		).put(
 			"visible", isVisible()
 		).put(
 			"visibleSessionKey", _VISIBLE_SESSION_KEY
@@ -154,6 +158,38 @@ public class SideNavigationDisplayContext {
 	private String _getColorScheme() {
 		return SessionClicks.get(
 			_httpServletRequest, _COLOR_SCHEME_SESSION_KEY, "light");
+	}
+
+	private Map<String, Object> _getUserMenu() throws Exception {
+		User user = _themeDisplay.getUser();
+
+		LiferayPortletURL itemsURL =
+			(LiferayPortletURL)RequestBackedPortletURLFactoryUtil.create(
+				_httpServletRequest
+			).createResourceURL(
+				PersonalMenuPortletKeys.PERSONAL_MENU
+			);
+
+		itemsURL.setCopyCurrentRenderParameters(false);
+		itemsURL.setParameter("currentURL", _themeDisplay.getURLCurrent());
+		itemsURL.setParameter("portletId", _portletId);
+		itemsURL.setResourceID(
+			"/product_navigation_personal_menu/get_personal_menu_items");
+
+		return HashMapBuilder.<String, Object>put(
+			"itemsURL", itemsURL.toString()
+		).put(
+			"name", user.getFullName()
+		).put(
+			"portraitURL",
+			() -> {
+				if (user.getPortraitId() > 0) {
+					return user.getPortraitURL(_themeDisplay);
+				}
+
+				return null;
+			}
+		).build();
 	}
 
 	private List<String> _getExpandedKeys() {

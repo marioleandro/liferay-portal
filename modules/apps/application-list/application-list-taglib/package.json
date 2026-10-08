@@ -12,6 +12,7 @@
 		"@clayui/shared": "^3.166.0",
 		"@clayui/sticker": "^3.166.0",
 		"@liferay/layout-js-components-web": "*",
+		"@liferay/product-navigation-unified-web": "*",
 		"classnames": "2.3.1",
 		"frontend-js-components-web": "*",
 		"frontend-js-web": "*",

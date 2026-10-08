@@ -1,12 +1,11 @@
-import * as API from 'shared/api';
 import BaseToolbar from './BaseToolbar';
+import LanguageMenu from './LanguageMenu';
 import ClayButton from '@clayui/button';
 import ClayDropDown, {Align} from '@clayui/drop-down';
 import ClayIcon from '@clayui/icon';
 import ClaySticker from '@clayui/sticker';
-import React, {useRef, useState} from 'react';
+import React from 'react';
 import {collapseSidebar} from 'shared/actions/sidebar';
-import {getLanguageLabel} from 'shared/util/locale';
 import {getInitials} from 'shared/util/util';
 import {Link} from 'react-router-dom';
 import {Routes, toRoute} from 'shared/util/router';
@@ -28,13 +27,9 @@ const Toolbar: React.FC<IToolbarProps> = ({className, groupId}) => {
 
 	const dispatch = useDispatch();
 
-	const [active, setActive] = useState(false);
-
-	const triggerElementRef = useRef(null);
-
 	const LDPEnabled = useLDPEnabled({groupId});
 
-	const {emailAddress, languageId} = currentUser;
+	const {emailAddress} = currentUser;
 
 	return (
 		<BaseToolbar className={className}>
@@ -102,68 +97,7 @@ const Toolbar: React.FC<IToolbarProps> = ({className, groupId}) => {
 			<BaseToolbar.Item className="align-self-stretch border-left my-1 p-0" />
 
 			<BaseToolbar.Item>
-				<ClayButton
-					aria-expanded={active}
-					aria-haspopup="true"
-					borderless
-					className="rounded-lg text-nowrap"
-					data-tooltip-align="bottom"
-					displayType="secondary"
-					onClick={() => setActive(!active)}
-					ref={triggerElementRef}
-					size="sm"
-					title={Liferay.Language.get('language')}
-				>
-					<ClayIcon
-						className="inline-item mr-sm-1"
-						symbol="automatic-translate"
-					/>
-
-					<span className="d-none d-sm-inline">
-						{getLanguageLabel(languageId)}
-					</span>
-
-					<ClayIcon
-						className="d-none d-sm-inline-flex inline-item inline-item-after"
-						symbol="caret-bottom"
-					/>
-				</ClayButton>
-
-				<ClayDropDown.Menu
-					active={active}
-					alignElementRef={triggerElementRef}
-					alignmentPosition={Align.BottomRight}
-					onActiveChange={setActive}
-					triggerRef={triggerElementRef}
-				>
-					<ClayDropDown.ItemList>
-						{Object.entries(Liferay.Language.available).map(
-							([id, label]) => (
-								<ClayDropDown.Item
-									active={languageId === id}
-									key={id}
-									onClick={() => {
-										setActive(false);
-
-										if (languageId === id) {
-											return;
-										}
-
-										API.user
-											.updateLanguage({
-												languageId: id,
-											})
-											.then(() =>
-												window.location.reload()
-											);
-									}}
-								>
-									{label}
-								</ClayDropDown.Item>
-							)
-						)}
-					</ClayDropDown.ItemList>
-				</ClayDropDown.Menu>
+				<LanguageMenu />
 			</BaseToolbar.Item>
 
 			<BaseToolbar.Item>

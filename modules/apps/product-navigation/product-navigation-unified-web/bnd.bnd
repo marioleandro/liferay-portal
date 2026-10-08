@@ -1,0 +1,4 @@
+Bundle-Name: Liferay Product Navigation Unified Web
+Bundle-SymbolicName: com.liferay.product.navigation.unified.web
+Bundle-Version: 1.0.0
+Web-ContextPath: /product-navigation-unified-web

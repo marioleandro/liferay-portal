@@ -92,3 +92,17 @@
 		}
 	}
 }
+
+.unified-navigation-host {
+	.sidebar-container,
+	.top-bar {
+		display: none;
+	}
+
+	.sidebar-layout {
+		display: block;
+		min-height: auto;
+		padding-left: var(--unified-navigation-start, 0px);
+		transition: padding 140ms ease-out;
+	}
+}

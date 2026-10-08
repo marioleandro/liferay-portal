@@ -1,27 +1,16 @@
 import ChannelsMenu, {Channel} from '../channels-menu';
 import ClayIcon from '@clayui/icon';
+import getSidebarSections, {
+	ISidebarNavItem,
+	ISidebarNavSection,
+} from './sections';
 import getCN from 'classnames';
 import React, {useLayoutEffect} from 'react';
-import {ACCOUNTS, Routes, SEGMENTS, toRoute} from 'shared/util/router';
 import {Map} from 'immutable';
 import {matchPath} from 'react-router-dom';
 import {useIsMobile} from 'shared/hooks/useIsMobile';
 import {useLDPEnabled} from 'shared/hooks/useLDPEnabled';
 import {SidePanel, VerticalNav} from '@clayui/core';
-
-interface ISidebarNavItem {
-	icon: string;
-	id: string;
-	label: string;
-	route: string;
-	url: string;
-}
-
-interface ISidebarNavSection {
-	id: string;
-	items: ISidebarNavItem[];
-	label: string;
-}
 
 type SidebarNavEntry = ISidebarNavItem | ISidebarNavSection;
 
@@ -93,106 +82,11 @@ const Sidebar: React.FC<ISidebarProps> = ({
 		}
 	}, [activePathname, isMobile]);
 
-	const sidebarSections: ISidebarNavSection[] = [
-		{
-			id: 'touchpoints',
-			items: [
-				LDPEnabled && {
-					icon: 'plant',
-					id: 'lifecycles',
-					label: Liferay.Language.get('lifecycles'),
-					route: Routes.LIFECYCLE,
-					url: toRoute(Routes.LIFECYCLE, {channelId, groupId}),
-				},
-				LDPEnabled && {
-					icon: 'megaphone',
-					id: 'campaigns',
-					label: Liferay.Language.get('campaigns'),
-					route: Routes.CAMPAIGNS,
-					url: toRoute(Routes.CAMPAIGNS, {channelId, groupId}),
-				},
-				{
-					icon: 'sites',
-					id: 'sites',
-					label: Liferay.Language.get('sites'),
-					route: Routes.SITES,
-					url: toRoute(Routes.SITES, {channelId, groupId}),
-				},
-				{
-					icon: 'sheets',
-					id: 'assets',
-					label: Liferay.Language.get('assets'),
-					route: Routes.ASSETS,
-					url: toRoute(Routes.ASSETS, {
-						channelId,
-						groupId,
-					}),
-				},
-				{
-					icon: 'click',
-					id: 'events',
-					label: Liferay.Language.get('events'),
-					route: Routes.EVENT_ANALYSIS,
-					url: toRoute(Routes.EVENT_ANALYSIS, {
-						channelId,
-						groupId,
-					}),
-				},
-			].filter(Boolean) as ISidebarNavItem[],
-			label: Liferay.Language.get('touchpoints'),
-		},
-		{
-			id: 'people',
-			items: [
-				{
-					icon: 'box-squared',
-					id: 'segments',
-					label: Liferay.Language.get('segments'),
-					route: `${Routes.CONTACTS}/${SEGMENTS}`,
-					url: toRoute(Routes.CONTACTS_LIST_ENTITY, {
-						channelId,
-						groupId,
-						type: SEGMENTS,
-					}),
-				},
-				LDPEnabled && {
-					icon: 'briefcase',
-					id: 'accounts',
-					label: Liferay.Language.get('accounts'),
-					route: `${Routes.CONTACTS}/${ACCOUNTS}`,
-					url: toRoute(Routes.CONTACTS_LIST_ENTITY, {
-						channelId,
-						groupId,
-						type: ACCOUNTS,
-					}),
-				},
-				{
-					icon: 'users',
-					id: 'individuals',
-					label: Liferay.Language.get('individuals'),
-					route: Routes.CONTACTS_INDIVIDUALS,
-					url: toRoute(Routes.CONTACTS_INDIVIDUALS, {
-						channelId,
-						groupId,
-					}),
-				},
-			].filter(Boolean) as ISidebarNavItem[],
-			label: Liferay.Language.get('people'),
-		},
-		{
-			id: 'optimize',
-			items: [
-				{
-					icon: 'test',
-					id: 'tests',
-					label: Liferay.Language.get('tests'),
-					route: Routes.TESTS,
-					url: toRoute(Routes.TESTS, {channelId, groupId}),
-				},
-			],
-			label: Liferay.Language.get('optimize'),
-		},
-	];
+	const sidebarSections = getSidebarSections({
+		channelId,
+		groupId,
+		LDPEnabled,
+	});
 
 	const isActive = ({route}: ISidebarNavItem) =>
 		Boolean(matchPath({end: false, path: route}, activePathname));
