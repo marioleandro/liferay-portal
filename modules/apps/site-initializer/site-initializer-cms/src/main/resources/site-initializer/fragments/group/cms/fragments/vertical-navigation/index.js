@@ -10,58 +10,68 @@ import ClayIcon from '@clayui/icon';
 import React from 'react';
 import {createRoot} from 'react-dom/client';
 
-const props = JSON.parse(
-	fragmentElement.querySelector('.vertical-navigation-props').innerHTML
-);
+// In view mode the unified sidebar renders these items from the props, so the
+// menu is only rendered here for the page editor. Rendering it in both would
+// also race: this root replaces the props the sidebar reads.
 
-const root = createRoot(
-	fragmentElement.querySelector('.vertical-navigation-fragment')
-);
+if (layoutMode !== 'view') {
+	renderVerticalNavigation();
+}
 
-root.render(
-	React.createElement(
-		VerticalNav,
-		{
-			active: props.active,
-			['aria-label']: configuration.ariaLabel,
-			defaultExpandedKeys: new Set(props.expandedKeys),
-			displayType: 'primary',
-			items: props.navItems,
-			spritemap: Liferay.Icons.spritemap,
-		},
-		(navItem) =>
-			React.createElement(
-				VerticalNav.Item,
-				{
-					href: navItem.href,
-					items: navItem.items,
-					key: navItem.id,
-					textValue: navItem.label,
-				},
+function renderVerticalNavigation() {
+	const props = JSON.parse(
+		fragmentElement.querySelector('.vertical-navigation-props').innerHTML
+	);
+
+	const root = createRoot(
+		fragmentElement.querySelector('.vertical-navigation-fragment')
+	);
+
+	root.render(
+		React.createElement(
+			VerticalNav,
+			{
+				active: props.active,
+				['aria-label']: configuration.ariaLabel,
+				defaultExpandedKeys: new Set(props.expandedKeys),
+				displayType: 'primary',
+				items: props.navItems,
+				spritemap: Liferay.Icons.spritemap,
+			},
+			(navItem) =>
 				React.createElement(
-					'div',
+					VerticalNav.Item,
 					{
-						className: 'autofit-row',
+						href: navItem.href,
+						items: navItem.items,
+						key: navItem.id,
+						textValue: navItem.label,
 					},
-					navItem.icon &&
-						React.createElement(
-							'div',
-							{
-								className: 'autofit-col',
-							},
-							React.createElement(ClayIcon, {
-								spritemap: Liferay.Icons.spritemap,
-								symbol: navItem.icon,
-							})
-						),
 					React.createElement(
 						'div',
 						{
-							className: 'autofit-col autofit-col-expand',
+							className: 'autofit-row',
 						},
-						navItem.label
+						navItem.icon &&
+							React.createElement(
+								'div',
+								{
+									className: 'autofit-col',
+								},
+								React.createElement(ClayIcon, {
+									spritemap: Liferay.Icons.spritemap,
+									symbol: navItem.icon,
+								})
+							),
+						React.createElement(
+							'div',
+							{
+								className: 'autofit-col autofit-col-expand',
+							},
+							navItem.label
+						)
 					)
 				)
-			)
-	)
-);
+		)
+	);
+}
