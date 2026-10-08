@@ -1,0 +1,358 @@
+.unified-navigation-actions {
+	align-items: center;
+	display: flex;
+	gap: 1rem;
+	margin-left: auto;
+
+	// Hosts render some actions lazily behind a placeholder spinner; keep it
+	// at icon size so it can't stretch the bar while the action loads.
+
+	.loading-animation {
+		font-size: 1rem;
+		margin: 0;
+	}
+
+	> .unified-navigation-slot {
+		align-items: center;
+		display: flex;
+		max-height: 2rem;
+	}
+}
+
+.unified-navigation-backdrop {
+	background-color: rgba(0, 0, 0, 0.4);
+	inset: 0;
+	position: fixed;
+	z-index: 1033;
+}
+
+.unified-navigation-empty {
+	font-size: 0.875rem;
+	margin: 0.5rem 0;
+}
+
+.unified-navigation-header-action.btn {
+	align-items: center;
+	border-radius: 0.5rem;
+	display: inline-flex;
+	flex-shrink: 0;
+	justify-content: center;
+
+	&:hover {
+		background-color: var(--light, #f1f2f5);
+	}
+}
+
+.unified-navigation-search {
+	margin: 0 0.75rem 1rem;
+	position: relative;
+
+	.form-control {
+		padding-left: 2.5rem;
+	}
+
+	input::-webkit-search-cancel-button {
+		display: none;
+	}
+}
+
+// Clay's lexicon-icon offsets icons vertically for inline text, so the search
+// icon is centered with auto margins instead.
+
+.unified-navigation-search-icon.lexicon-icon {
+	bottom: 0;
+	color: var(--secondary, #6b6c7e);
+	height: 1rem;
+	left: 0.9375rem;
+	margin: auto 0;
+	pointer-events: none;
+	position: absolute;
+	top: 0;
+	width: 1rem;
+}
+
+.unified-navigation-section-label {
+	font-size: 0.75rem;
+	font-weight: 600;
+	letter-spacing: 0.5px;
+	text-transform: uppercase;
+}
+
+.unified-navigation-sidebar {
+	background-color: var(--light-l1, #f7f8f9);
+	border-right: 1px solid var(--secondary-l2, #cdced9);
+	bottom: 0;
+	display: flex;
+	flex-direction: column;
+	left: 0;
+	opacity: 0;
+	position: fixed;
+	top: 0;
+	transform: translateX(-56px);
+	transition:
+		opacity 0.14s ease-out,
+		transform 0.14s ease-out,
+		visibility 0s linear 0.14s;
+	visibility: hidden;
+	width: 280px;
+	z-index: 1034;
+
+	.nav-link {
+		align-items: center;
+		display: flex;
+	}
+}
+
+.unified-navigation-sidebar-body {
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+	min-height: 0;
+	overflow: auto;
+	padding-bottom: 0.5rem;
+	scrollbar-color: var(--secondary-l2, #cdced9) transparent;
+	scrollbar-width: thin;
+}
+
+.unified-navigation-sidebar-clipped-bottom .unified-navigation-sidebar-footer {
+	box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.08);
+}
+
+.unified-navigation-sidebar-clipped-top .unified-navigation-sidebar-search {
+	box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+}
+
+.unified-navigation-sidebar-footer {
+	flex-shrink: 0;
+	padding: 0.5rem;
+	position: relative;
+	transition: box-shadow 150ms ease;
+	z-index: 1;
+}
+
+.unified-navigation-sidebar-header {
+	align-items: center;
+	display: flex;
+	gap: 0.5rem;
+	min-height: 56px;
+	padding: 12px 12px 12px 52px;
+}
+
+.unified-navigation-sidebar-open {
+	opacity: 1;
+	transform: none;
+	transition-delay: 0s;
+	visibility: visible;
+}
+
+.unified-navigation-sidebar-peek,
+.unified-navigation-sidebar-mobile {
+	box-shadow: 0 4px 16px rgba(39, 40, 51, 0.18);
+}
+
+.unified-navigation-sidebar-search {
+	flex-shrink: 0;
+	position: relative;
+	transition: box-shadow 150ms ease;
+	z-index: 1;
+}
+
+.unified-navigation-sidebar-title {
+	flex: 1;
+	font-size: 1rem;
+	font-weight: 600;
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.unified-navigation-slot:empty {
+	display: none;
+}
+
+.unified-navigation-title {
+	flex: 1;
+	font-size: 1.125rem;
+	font-weight: 600;
+	margin: 0;
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.unified-navigation-toggle.btn {
+	align-items: center;
+	border-radius: 0.5rem;
+	display: inline-flex;
+	height: 2rem;
+	justify-content: center;
+	left: 12px;
+	padding: 0;
+	position: fixed;
+	top: 12px;
+	width: 2rem;
+	z-index: 1035;
+
+	&:hover {
+		background-color: var(--light, #f1f2f5);
+	}
+}
+
+.unified-navigation-toggle-brand {
+	align-items: center;
+	background: transparent;
+	border: 0;
+	display: inline-flex;
+	height: 2rem;
+	justify-content: center;
+	width: 2rem;
+
+	// DXP's product icons are full-bleed artwork, unlike the padded PNGs in the
+	// prototype, so they sit at 24px inside the 32px button to read the same.
+	// Sprite icons keep the size of the menu icon they replace.
+
+	img {
+		display: block;
+		height: 1.5rem;
+		object-fit: contain;
+		width: 1.5rem;
+	}
+
+	.lexicon-icon {
+		display: block;
+		height: 1rem;
+		width: 1rem;
+	}
+}
+
+.unified-navigation-toggle-pinned.btn,
+.unified-navigation-toggle-pinned.btn:hover {
+	background-color: color-mix(in srgb, var(--dark, #272833) 8%, transparent);
+}
+
+.unified-navigation-top-bar {
+	align-items: center;
+	background-color: var(--white, #fff);
+	border-bottom: 1px solid var(--secondary-l2, #cdced9);
+	display: flex;
+	gap: 0.5rem;
+	height: 56px;
+	padding: 12px 12px 12px calc(var(--unified-navigation-start, 0px) + 52px);
+	position: sticky;
+	top: 0;
+	transition: padding 0.14s ease-out;
+	z-index: 1020;
+}
+
+.unified-navigation-top-bar-no-sidebar {
+	padding-left: 12px;
+}
+
+.unified-navigation-top-bar-pinned {
+	padding-left: calc(var(--unified-navigation-start, 0px) + 20px);
+}
+
+.unified-navigation-user {
+	align-items: center;
+	appearance: none;
+	background: none;
+	border: 0;
+	border-radius: 0.5rem;
+	color: var(--dark, #272833);
+	cursor: pointer;
+	display: inline-flex;
+	font-weight: 600;
+	gap: 0.5rem;
+	max-width: 100%;
+	padding: 0.5rem;
+	text-align: left;
+
+	&:hover {
+		background-color: var(--light, #f1f2f5);
+	}
+}
+
+.unified-navigation-user-avatar.sticker {
+	background-color: var(--light-d1, #e2e4ea);
+	border: 0;
+	box-shadow: none;
+	flex-shrink: 0;
+	font-size: 0.625rem;
+	height: 1.5rem;
+	width: 1.5rem;
+}
+
+.unified-navigation-user-caret {
+	color: var(--secondary-l0, #a7a9bc);
+	flex-shrink: 0;
+	transition: transform 150ms ease;
+}
+
+.unified-navigation-user-menu {
+	position: relative;
+}
+
+.unified-navigation-user-menu-item {
+	align-items: center;
+	display: flex;
+	justify-content: space-between;
+}
+
+.unified-navigation-user-menu-item-icon {
+	color: var(--secondary, #6b6c7e);
+	flex-shrink: 0;
+	margin-left: 0.5rem;
+}
+
+.unified-navigation-user-menu-list.dropdown-menu {
+	bottom: calc(100% + 0.25rem);
+	left: 0;
+	max-height: 70vh;
+	overflow-y: auto;
+	position: absolute;
+	right: 0;
+	top: auto;
+	z-index: 30;
+}
+
+.unified-navigation-user-menu-open {
+	.unified-navigation-user {
+		background-color: color-mix(in srgb, var(--dark, #272833) 8%, transparent);
+	}
+
+	.unified-navigation-user-caret {
+		transform: rotate(180deg);
+	}
+}
+
+.unified-navigation-user-name {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+@media (max-width: 767.98px) {
+	.unified-navigation-sidebar-header {
+		padding-left: 48px;
+	}
+
+	.unified-navigation-title {
+		font-size: 1rem;
+	}
+
+	.unified-navigation-toggle.btn {
+		left: 8px;
+		top: 8px;
+	}
+
+	.unified-navigation-top-bar {
+		height: 48px;
+		padding: 8px 8px 8px 48px;
+	}
+
+	.unified-navigation-top-bar-no-sidebar {
+		padding-left: 8px;
+	}
+}

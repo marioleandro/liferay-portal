@@ -213,6 +213,7 @@ export default [
 	'@liferay/product-navigation-omni-search-web',
 	'@liferay/product-navigation-product-menu-theme-contributor',
 	'@liferay/product-navigation-site-administration',
+	'@liferay/product-navigation-unified-web',
 	'@liferay/product-navigation-user-personal-bar-web',
 	'@liferay/saml-web',
 	'@liferay/saved-content-taglib',
