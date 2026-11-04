@@ -7,13 +7,16 @@ package com.liferay.configuration.admin.web.internal.display;
 
 import com.liferay.configuration.admin.util.ConfigurationPidUtil;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.VerticalNavItemList;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
+import com.liferay.portal.kernel.language.LanguageUtil;
 
 import jakarta.portlet.RenderRequest;
 import jakarta.portlet.RenderResponse;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -65,14 +68,26 @@ public class ConfigurationCategoryMenuDisplay {
 
 		VerticalNavItemList verticalNavItemList = new VerticalNavItemList();
 
-		for (ConfigurationEntry curConfigurationEntry :
-				configurationScopeDisplay.getConfigurationEntries()) {
+		List<ConfigurationEntry> configurationEntries =
+			configurationScopeDisplay.getConfigurationEntries();
 
+		Set<String> duplicateNames = new HashSet<>();
+		Set<String> names = new HashSet<>();
+
+		for (ConfigurationEntry curConfigurationEntry : configurationEntries) {
+			String name = curConfigurationEntry.getName(
+				renderRequest.getLocale());
+
+			if (names.add(name)) {
+				continue;
+			}
+
+			duplicateNames.add(name);
+		}
+
+		for (ConfigurationEntry curConfigurationEntry : configurationEntries) {
 			verticalNavItemList.add(
 				verticalNavItem -> {
-					String name = curConfigurationEntry.getName(
-						renderRequest.getLocale());
-
 					verticalNavItem.put(
 						"deprecated", curConfigurationEntry.isDeprecated());
 
@@ -87,7 +102,21 @@ public class ConfigurationCategoryMenuDisplay {
 					verticalNavItem.setHref(
 						curConfigurationEntry.getEditURL(
 							renderRequest, renderResponse));
-					verticalNavItem.setId(name);
+					verticalNavItem.setId(curConfigurationEntry.getKey());
+
+					String name = curConfigurationEntry.getName(
+						renderRequest.getLocale());
+
+					if (duplicateNames.contains(name)) {
+						name = StringBundler.concat(
+							name, " (",
+							LanguageUtil.get(
+								renderRequest.getLocale(),
+								_getScopeLanguageKey(
+									curConfigurationEntry.getScope())),
+							")");
+					}
+
 					verticalNavItem.setLabel(name);
 				});
 		}
@@ -97,6 +126,24 @@ public class ConfigurationCategoryMenuDisplay {
 
 	public boolean isEmpty() {
 		return _configurationScopeDisplay.isEmpty();
+	}
+
+	private String _getScopeLanguageKey(String scope) {
+		if (ExtendedObjectClassDefinition.Scope.COMPANY.equals(scope)) {
+			return "instance";
+		}
+
+		if (ExtendedObjectClassDefinition.Scope.GROUP.equals(scope)) {
+			return "site";
+		}
+
+		if (ExtendedObjectClassDefinition.Scope.PORTLET_INSTANCE.equals(
+				scope)) {
+
+			return "widget";
+		}
+
+		return scope;
 	}
 
 	private final ConfigurationCategoryDisplay _configurationCategoryDisplay;
