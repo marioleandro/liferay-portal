@@ -53,15 +53,15 @@ public class ConfigurationCategoryMenuDisplayTest extends Mockito {
 
 	@Test
 	public void testGetVerticalNavItemList() {
+		LanguageUtil languageUtil = new LanguageUtil();
+
 		Language language = mock(Language.class);
 
 		when(
 			language.get(Mockito.any(Locale.class), Mockito.anyString())
 		).thenAnswer(
-			invocation -> invocation.getArgument(1)
+			invocationOnMock -> invocationOnMock.getArgument(1)
 		);
-
-		LanguageUtil languageUtil = new LanguageUtil();
 
 		languageUtil.setLanguage(language);
 

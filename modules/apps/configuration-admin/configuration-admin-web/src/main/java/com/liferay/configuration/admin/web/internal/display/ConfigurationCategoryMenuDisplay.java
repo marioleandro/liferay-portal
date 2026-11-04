@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 /**
@@ -74,8 +75,10 @@ public class ConfigurationCategoryMenuDisplay {
 		Set<String> duplicateNames = new HashSet<>();
 		Set<String> names = new HashSet<>();
 
-		for (ConfigurationEntry curConfigurationEntry : configurationEntries) {
-			String name = curConfigurationEntry.getName(
+		for (ConfigurationEntry currentConfigurationEntry :
+				configurationEntries) {
+
+			String name = currentConfigurationEntry.getName(
 				renderRequest.getLocale());
 
 			if (names.add(name)) {
@@ -85,11 +88,13 @@ public class ConfigurationCategoryMenuDisplay {
 			duplicateNames.add(name);
 		}
 
-		for (ConfigurationEntry curConfigurationEntry : configurationEntries) {
+		for (ConfigurationEntry currentConfigurationEntry :
+				configurationEntries) {
+
 			verticalNavItemList.add(
 				verticalNavItem -> {
 					verticalNavItem.put(
-						"deprecated", curConfigurationEntry.isDeprecated());
+						"deprecated", currentConfigurationEntry.isDeprecated());
 
 					String key = ConfigurationPidUtil.getRawPid(
 						configurationEntry.getKey());
@@ -97,27 +102,28 @@ public class ConfigurationCategoryMenuDisplay {
 					verticalNavItem.setActive(
 						key.equals(
 							ConfigurationPidUtil.getRawPid(
-								curConfigurationEntry.getKey())));
+								currentConfigurationEntry.getKey())));
 
 					verticalNavItem.setHref(
-						curConfigurationEntry.getEditURL(
+						currentConfigurationEntry.getEditURL(
 							renderRequest, renderResponse));
-					verticalNavItem.setId(curConfigurationEntry.getKey());
+					verticalNavItem.setId(currentConfigurationEntry.getKey());
 
-					String name = curConfigurationEntry.getName(
+					String name = currentConfigurationEntry.getName(
 						renderRequest.getLocale());
 
 					if (duplicateNames.contains(name)) {
-						name = StringBundler.concat(
-							name, " (",
-							LanguageUtil.get(
-								renderRequest.getLocale(),
-								_getScopeLanguageKey(
-									curConfigurationEntry.getScope())),
-							")");
+						verticalNavItem.setLabel(
+							StringBundler.concat(
+								name, " (",
+								_getScopeLabel(
+									renderRequest.getLocale(),
+									currentConfigurationEntry.getScope()),
+								")"));
 					}
-
-					verticalNavItem.setLabel(name);
+					else {
+						verticalNavItem.setLabel(name);
+					}
 				});
 		}
 
@@ -128,22 +134,22 @@ public class ConfigurationCategoryMenuDisplay {
 		return _configurationScopeDisplay.isEmpty();
 	}
 
-	private String _getScopeLanguageKey(String scope) {
+	private String _getScopeLabel(Locale locale, String scope) {
 		if (ExtendedObjectClassDefinition.Scope.COMPANY.equals(scope)) {
-			return "instance";
+			return LanguageUtil.get(locale, "instance");
 		}
 
 		if (ExtendedObjectClassDefinition.Scope.GROUP.equals(scope)) {
-			return "site";
+			return LanguageUtil.get(locale, "site");
 		}
 
 		if (ExtendedObjectClassDefinition.Scope.PORTLET_INSTANCE.equals(
 				scope)) {
 
-			return "widget";
+			return LanguageUtil.get(locale, "widget");
 		}
 
-		return scope;
+		return LanguageUtil.get(locale, scope);
 	}
 
 	private final ConfigurationCategoryDisplay _configurationCategoryDisplay;
