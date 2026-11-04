@@ -232,13 +232,17 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro gotoConfiguration(configurationScope = null, configurationName = null, configurationCategory = null) {
+	macro gotoConfiguration(configurationScope = null, configurationName = null, configurationLabel = null, configurationCategory = null) {
+		if (!(isSet(configurationLabel))) {
+			var configurationLabel = ${configurationName};
+		}
+
 		Click(
 			key_itemName = ${configurationCategory},
 			locator1 = "ListGroupItem#ITEM_TEXT");
 
 		Click(
-			key_configurationName = ${configurationName},
+			key_configurationName = ${configurationLabel},
 			key_configurationScope = ${configurationScope},
 			locator1 = "SystemSettings#SCOPED_CONFIGURATION_NAME");
 

@@ -12,7 +12,10 @@ import {waitForAlert} from '../../../utils/waitForAlert';
 const test = mergeTests(loginTest(), systemSettingsPageTest);
 
 test.beforeEach(async ({systemSettingsPage}) => {
-	await systemSettingsPage.goToSystemSetting('Assets', 'Asset Auto Tagging');
+	await systemSettingsPage.goToSystemSetting(
+		'Assets',
+		'Asset Auto Tagging (Instance)'
+	);
 });
 
 test.afterEach(async ({systemSettingsPage}) => {
