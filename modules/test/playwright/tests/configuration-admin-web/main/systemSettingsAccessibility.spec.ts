@@ -14,7 +14,7 @@ const test = mergeTests(loginTest(), systemSettingsPageTest);
 test.beforeEach(async ({systemSettingsPage}) => {
 	await systemSettingsPage.goToSystemSetting(
 		'Assets',
-		'Asset Auto Tagging (Instance)'
+		'Asset Auto Tagging (Virtual Instance Scope)'
 	);
 });
 

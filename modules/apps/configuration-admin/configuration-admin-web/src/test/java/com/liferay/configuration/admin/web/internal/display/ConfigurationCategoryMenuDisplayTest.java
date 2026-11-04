@@ -114,10 +114,10 @@ public class ConfigurationCategoryMenuDisplayTest extends Mockito {
 
 		Assert.assertEquals(labels.toString(), 3, labels.size());
 		Assert.assertEquals(
-			duplicateName + " (instance)",
+			duplicateName + " (scope.company)",
 			labels.get(companyConfigurationEntry.getKey()));
 		Assert.assertEquals(
-			duplicateName + " (system)",
+			duplicateName + " (scope.system)",
 			labels.get(systemConfigurationEntry.getKey()));
 		Assert.assertEquals(
 			uniqueName, labels.get(uniqueConfigurationEntry.getKey()));

@@ -479,7 +479,7 @@ definition {
 
 			SystemSettings.gotoConfiguration(
 				configurationCategory = "Segments",
-				configurationLabel = "Segments Service (System)",
+				configurationLabel = "Segments Service (System Scope)",
 				configurationName = "Segments Service",
 				configurationScope = "System Scope");
 		}
@@ -571,7 +571,7 @@ definition {
 
 		SystemSettings.gotoConfiguration(
 			configurationCategory = "Segments",
-			configurationLabel = "Liferay Data Platform Segments (System)",
+			configurationLabel = "Liferay Data Platform Segments (System Scope)",
 			configurationName = "Liferay Data Platform Segments",
 			configurationScope = "System Scope");
 

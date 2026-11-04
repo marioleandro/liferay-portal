@@ -18,7 +18,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 
 /**
@@ -116,9 +115,10 @@ public class ConfigurationCategoryMenuDisplay {
 						verticalNavItem.setLabel(
 							StringBundler.concat(
 								name, " (",
-								_getScopeLabel(
+								LanguageUtil.get(
 									renderRequest.getLocale(),
-									currentConfigurationEntry.getScope()),
+									"scope." +
+										currentConfigurationEntry.getScope()),
 								")"));
 					}
 					else {
@@ -132,24 +132,6 @@ public class ConfigurationCategoryMenuDisplay {
 
 	public boolean isEmpty() {
 		return _configurationScopeDisplay.isEmpty();
-	}
-
-	private String _getScopeLabel(Locale locale, String scope) {
-		if (ExtendedObjectClassDefinition.Scope.COMPANY.equals(scope)) {
-			return LanguageUtil.get(locale, "instance");
-		}
-
-		if (ExtendedObjectClassDefinition.Scope.GROUP.equals(scope)) {
-			return LanguageUtil.get(locale, "site");
-		}
-
-		if (ExtendedObjectClassDefinition.Scope.PORTLET_INSTANCE.equals(
-				scope)) {
-
-			return LanguageUtil.get(locale, "widget");
-		}
-
-		return LanguageUtil.get(locale, scope);
 	}
 
 	private final ConfigurationCategoryDisplay _configurationCategoryDisplay;
