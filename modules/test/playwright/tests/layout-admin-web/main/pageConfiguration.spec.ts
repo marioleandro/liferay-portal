@@ -1106,7 +1106,10 @@ test.describe('SEO configuration', () => {
 
 		// Disable open graph
 
-		await systemSettingsPage.goToSystemSetting('Pages', 'SEO');
+		await systemSettingsPage.goToSystemSetting(
+			'Pages',
+			'SEO (Virtual Instance Scope)'
+		);
 
 		const openGraphCheckInput = page.getByLabel('Enable Open Graph');
 
@@ -1130,7 +1133,10 @@ test.describe('SEO configuration', () => {
 
 		// Enable open graph
 
-		await systemSettingsPage.goToSystemSetting('Pages', 'SEO');
+		await systemSettingsPage.goToSystemSetting(
+			'Pages',
+			'SEO (Virtual Instance Scope)'
+		);
 
 		await openGraphCheckInput.check();
 

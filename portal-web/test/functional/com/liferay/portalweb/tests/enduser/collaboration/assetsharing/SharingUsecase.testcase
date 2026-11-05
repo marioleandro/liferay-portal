@@ -55,6 +55,7 @@ definition {
 
 		SystemSettings.gotoConfiguration(
 			configurationCategory = "Sharing",
+			configurationLabel = "Sharing (System Scope)",
 			configurationName = "Sharing",
 			configurationScope = "System Scope");
 
