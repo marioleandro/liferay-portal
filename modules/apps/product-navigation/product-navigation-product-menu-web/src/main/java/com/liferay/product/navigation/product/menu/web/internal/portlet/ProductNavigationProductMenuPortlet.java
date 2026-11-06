@@ -17,6 +17,7 @@ import com.liferay.portal.kernel.service.LayoutService;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.product.navigation.control.menu.manager.ProductNavigationControlMenuManager;
 import com.liferay.product.navigation.product.menu.constants.ProductNavigationProductMenuPortletKeys;
+import com.liferay.product.navigation.product.menu.helper.ProductNavigationProductMenuHelper;
 import com.liferay.product.navigation.product.menu.web.internal.display.context.LayoutsTreeDisplayContext;
 import com.liferay.site.navigation.service.SiteNavigationMenuItemLocalService;
 import com.liferay.site.navigation.service.SiteNavigationMenuLocalService;
@@ -26,6 +27,8 @@ import jakarta.portlet.Portlet;
 import jakarta.portlet.PortletException;
 import jakarta.portlet.RenderRequest;
 import jakarta.portlet.RenderResponse;
+import jakarta.portlet.ResourceRequest;
+import jakarta.portlet.ResourceResponse;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -39,6 +42,7 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	property = {
+		"com.liferay.portlet.add-default-resource=true",
 		"com.liferay.portlet.display-category=category.hidden",
 		"com.liferay.portlet.header-portlet-css=/css/main.css",
 		"com.liferay.portlet.instanceable=false",
@@ -60,6 +64,20 @@ import org.osgi.service.component.annotations.Reference;
 public class ProductNavigationProductMenuPortlet extends MVCPortlet {
 
 	@Override
+	public void serveResource(
+			ResourceRequest resourceRequest, ResourceResponse resourceResponse)
+		throws IOException, PortletException {
+
+		if (!_productNavigationProductMenuHelper.isShowProductMenu(
+				_portal.getHttpServletRequest(resourceRequest))) {
+
+			return;
+		}
+
+		super.serveResource(resourceRequest, resourceResponse);
+	}
+
+	@Override
 	protected void doDispatch(
 			RenderRequest renderRequest, RenderResponse renderResponse)
 		throws IOException, PortletException {
@@ -68,6 +86,8 @@ public class ProductNavigationProductMenuPortlet extends MVCPortlet {
 			renderRequest);
 
 		if (!_productNavigationControlMenuManager.isShowControlMenu(
+				httpServletRequest) ||
+			!_productNavigationProductMenuHelper.isShowProductMenu(
 				httpServletRequest)) {
 
 			return;
@@ -116,6 +136,10 @@ public class ProductNavigationProductMenuPortlet extends MVCPortlet {
 	@Reference
 	private ProductNavigationControlMenuManager
 		_productNavigationControlMenuManager;
+
+	@Reference
+	private ProductNavigationProductMenuHelper
+		_productNavigationProductMenuHelper;
 
 	@Reference
 	private SiteNavigationMenuItemLocalService
