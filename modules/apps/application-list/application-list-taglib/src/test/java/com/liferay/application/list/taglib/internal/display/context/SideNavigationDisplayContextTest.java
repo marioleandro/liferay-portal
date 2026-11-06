@@ -145,7 +145,6 @@ public class SideNavigationDisplayContextTest {
 
 		ReflectionTestUtil.setFieldValue(_themeDisplay, "_user", user);
 
-		LanguageUtil languageUtil = new LanguageUtil();
 		Language language = Mockito.mock(Language.class);
 
 		Mockito.when(
@@ -155,7 +154,7 @@ public class SideNavigationDisplayContextTest {
 			"My Site"
 		);
 
-		languageUtil.setLanguage(language);
+		_setUpLanguage(language);
 
 		Assert.assertEquals("My Site", _getLabel());
 	}
@@ -174,7 +173,6 @@ public class SideNavigationDisplayContextTest {
 			_themeDisplay, "_user", Mockito.mock(User.class));
 
 		User ownerUser = Mockito.mock(User.class);
-
 		String fullName = RandomTestUtil.randomString();
 
 		Mockito.when(
@@ -183,7 +181,6 @@ public class SideNavigationDisplayContextTest {
 			fullName
 		);
 
-		LanguageUtil languageUtil = new LanguageUtil();
 		Language language = Mockito.mock(Language.class);
 
 		Mockito.when(
@@ -192,7 +189,7 @@ public class SideNavigationDisplayContextTest {
 			fullName + "'s Site"
 		);
 
-		languageUtil.setLanguage(language);
+		_setUpLanguage(language);
 
 		try (MockedStatic<UserLocalServiceUtil>
 				userLocalServiceUtilMockedStatic = Mockito.mockStatic(
@@ -412,6 +409,12 @@ public class SideNavigationDisplayContextTest {
 	private List<Map<String, Object>> _getPropsItems() {
 		return ReflectionTestUtil.invoke(
 			_sideNavigationDisplayContext, "_getPropsItems", new Class<?>[0]);
+	}
+
+	private void _setUpLanguage(Language language) {
+		LanguageUtil languageUtil = new LanguageUtil();
+
+		languageUtil.setLanguage(language);
 	}
 
 	private void _setUpPanelApps(
