@@ -172,8 +172,8 @@ public class SideNavigationDisplayContextTest {
 		ReflectionTestUtil.setFieldValue(
 			_themeDisplay, "_user", Mockito.mock(User.class));
 
-		User ownerUser = Mockito.mock(User.class);
 		String fullName = RandomTestUtil.randomString();
+		User ownerUser = Mockito.mock(User.class);
 
 		Mockito.when(
 			ownerUser.getFullName()
