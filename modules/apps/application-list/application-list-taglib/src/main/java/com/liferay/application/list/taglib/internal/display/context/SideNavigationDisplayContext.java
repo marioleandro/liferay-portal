@@ -11,12 +11,18 @@ import com.liferay.application.list.PanelCategory;
 import com.liferay.application.list.constants.ApplicationListWebKeys;
 import com.liferay.application.list.constants.PanelCategoryKeys;
 import com.liferay.application.list.display.context.logic.PanelCategoryHelper;
+import com.liferay.application.list.util.PanelCategoryRegistryUtil;
 import com.liferay.item.selector.ItemSelector;
 import com.liferay.item.selector.criteria.URLItemSelectorReturnType;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.portlet.LiferayPortletURL;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactoryUtil;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -31,25 +37,35 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author Thiago Buarque
  */
 public class SideNavigationDisplayContext {
 
+	public static boolean isVisible(HttpServletRequest httpServletRequest) {
+		String state = SessionClicks.get(
+			httpServletRequest, _VISIBLE_SESSION_KEY, "visible");
+
+		return state.equals("visible");
+	}
+
 	public SideNavigationDisplayContext(HttpServletRequest httpServletRequest) {
 		this(
 			httpServletRequest,
 			(PanelAppRegistry)httpServletRequest.getAttribute(
-				ApplicationListWebKeys.PANEL_APP_REGISTRY));
+				ApplicationListWebKeys.PANEL_APP_REGISTRY),
+			PanelCategoryKeys.APPLICATIONS_MENU);
 	}
 
 	public SideNavigationDisplayContext(
 		HttpServletRequest httpServletRequest,
-		PanelAppRegistry panelAppRegistry) {
+		PanelAppRegistry panelAppRegistry, String rootPanelCategoryKey) {
 
 		_httpServletRequest = httpServletRequest;
 		_panelAppRegistry = panelAppRegistry;
+		_rootPanelCategoryKey = rootPanelCategoryKey;
 
 		_panelCategoryHelper = new PanelCategoryHelper(panelAppRegistry);
 
@@ -58,8 +74,17 @@ public class SideNavigationDisplayContext {
 
 		_portletId = _themeDisplay.getPpid();
 
-		_panelCategory = _panelCategoryHelper.getActivePanelCategory(
-			PanelCategoryKeys.APPLICATIONS_MENU, _portletId, _themeDisplay);
+		_siteAdministration = Objects.equals(
+			rootPanelCategoryKey, PanelCategoryKeys.SITE_ADMINISTRATION);
+
+		if (_siteAdministration) {
+			_panelCategory = PanelCategoryRegistryUtil.getPanelCategory(
+				rootPanelCategoryKey);
+		}
+		else {
+			_panelCategory = _panelCategoryHelper.getActivePanelCategory(
+				rootPanelCategoryKey, _portletId, _themeDisplay);
+		}
 	}
 
 	public Map<String, Object> getProps() throws Exception {
@@ -75,10 +100,7 @@ public class SideNavigationDisplayContext {
 		return HashMapBuilder.<String, Object>put(
 			"canonicalName", _panelCategory.getLabel(LocaleUtil.ENGLISH)
 		).put(
-			"categoryImageUrl",
-			String.format(
-				"%s/product_icons/%s_sm.svg",
-				_themeDisplay.getPathThemeImages(), _panelCategory.getKey())
+			"categoryImageUrl", _getCategoryImageURL()
 		).put(
 			"colorScheme", _getColorScheme()
 		).put(
@@ -88,9 +110,11 @@ public class SideNavigationDisplayContext {
 		).put(
 			"expandedKeysSessionKey", _getExpandedKeysSessionKey()
 		).put(
+			"fixed", _siteAdministration
+		).put(
 			"items", _getPropsItems()
 		).put(
-			"label", _panelCategory.getLabel(_themeDisplay.getLocale())
+			"label", _getLabel()
 		).put(
 			"navigationItemsURL",
 			() -> {
@@ -107,6 +131,8 @@ public class SideNavigationDisplayContext {
 				navigationItemsURL.setParameter(
 					"p_v_l_s_g_id",
 					String.valueOf(_themeDisplay.getScopeGroupId()));
+				navigationItemsURL.setParameter(
+					"rootPanelCategoryKey", _rootPanelCategoryKey);
 				navigationItemsURL.setParameter(
 					"selectedPortletId", _portletId);
 				navigationItemsURL.setResourceID(
@@ -145,10 +171,25 @@ public class SideNavigationDisplayContext {
 	}
 
 	public boolean isVisible() {
-		String state = SessionClicks.get(
-			_httpServletRequest, _VISIBLE_SESSION_KEY, "visible");
+		return isVisible(_httpServletRequest);
+	}
 
-		return state.equals("visible");
+	private String _getCategoryImageURL() {
+		if (_siteAdministration) {
+			Company company = _themeDisplay.getCompany();
+
+			if (!company.isSiteLogo()) {
+				return _themeDisplay.getCompanyLogo();
+			}
+
+			Group group = _themeDisplay.getScopeGroup();
+
+			return group.getLogoURL(_themeDisplay, true);
+		}
+
+		return String.format(
+			"%s/product_icons/%s_sm.svg", _themeDisplay.getPathThemeImages(),
+			_panelCategory.getKey());
 	}
 
 	private String _getColorScheme() {
@@ -194,6 +235,27 @@ public class SideNavigationDisplayContext {
 		return String.format(
 			"com_liferay_application_list_taglib_SideNavigationExpanded_%sKeys",
 			_panelCategory.getKey());
+	}
+
+	private String _getLabel() throws Exception {
+		if (_siteAdministration) {
+			Group group = _themeDisplay.getScopeGroup();
+
+			if (!group.isUser()) {
+				return group.getDescriptiveName(_themeDisplay.getLocale());
+			}
+
+			if (group.getClassPK() == _themeDisplay.getUserId()) {
+				return LanguageUtil.get(_httpServletRequest, "my-site");
+			}
+
+			User user = UserLocalServiceUtil.getUser(group.getClassPK());
+
+			return LanguageUtil.format(
+				_themeDisplay.getLocale(), "x-site", user.getFullName());
+		}
+
+		return _panelCategory.getLabel(_themeDisplay.getLocale());
 	}
 
 	private List<Map<String, Object>> _getPanelAppPropsItems(
@@ -363,6 +425,8 @@ public class SideNavigationDisplayContext {
 	private final PanelCategoryHelper _panelCategoryHelper;
 	private final String _portletId;
 	private List<PanelCategory> _rootChildPanelCategories;
+	private final String _rootPanelCategoryKey;
+	private final boolean _siteAdministration;
 	private final ThemeDisplay _themeDisplay;
 
 }

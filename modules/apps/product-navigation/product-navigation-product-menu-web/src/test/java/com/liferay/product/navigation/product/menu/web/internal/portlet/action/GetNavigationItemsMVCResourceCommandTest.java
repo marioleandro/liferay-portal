@@ -163,6 +163,58 @@ public class GetNavigationItemsMVCResourceCommandTest {
 	}
 
 	@Test
+	public void testGetNavigationItemsJSONObjectReadsTheSiteAdministrationApplications()
+		throws Exception {
+
+		Mockito.when(
+			_resourceRequest.getParameter("rootPanelCategoryKey")
+		).thenReturn(
+			PanelCategoryKeys.SITE_ADMINISTRATION
+		);
+
+		PanelCategory panelCategory = Mockito.mock(PanelCategory.class);
+
+		Mockito.when(
+			panelCategory.getKey()
+		).thenReturn(
+			_PANEL_CATEGORY_KEY
+		);
+
+		Mockito.when(
+			_panelCategoryHelper.getChildPanelCategories(
+				PanelCategoryKeys.SITE_ADMINISTRATION, _themeDisplay)
+		).thenReturn(
+			List.of(panelCategory)
+		);
+
+		PanelApp panelApp = _createPanelApp(
+			List.of(
+				new PanelAppNavigationItem(
+					RandomTestUtil.randomString(),
+					RandomTestUtil.randomString(),
+					RandomTestUtil.randomString())),
+			"portletId");
+
+		Mockito.when(
+			_panelAppRegistry.getPanelApps(
+				_PANEL_CATEGORY_KEY, _permissionChecker, _group)
+		).thenReturn(
+			List.of(panelApp)
+		);
+
+		JSONObject navigationItemsJSONObject = _getNavigationItemsJSONObject();
+
+		Assert.assertNotNull(navigationItemsJSONObject.get("portletId"));
+
+		Mockito.verify(
+			_panelCategoryHelper, Mockito.never()
+		).getActivePanelCategory(
+			Mockito.anyString(), Mockito.anyString(),
+			Mockito.any(ThemeDisplay.class)
+		);
+	}
+
+	@Test
 	public void testGetNavigationItemsJSONObjectSetsTheItemIds()
 		throws Exception {
 
