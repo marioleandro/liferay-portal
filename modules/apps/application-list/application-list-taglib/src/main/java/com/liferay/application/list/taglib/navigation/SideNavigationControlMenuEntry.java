@@ -10,15 +10,18 @@ import com.liferay.application.list.display.context.logic.PanelCategoryHelper;
 import com.liferay.application.list.taglib.internal.display.context.SideNavigationDisplayContext;
 import com.liferay.frontend.taglib.clay.servlet.taglib.IconTag;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.template.react.renderer.ComponentDescriptor;
 import com.liferay.portal.template.react.renderer.ReactRenderer;
 import com.liferay.product.navigation.control.menu.BaseProductNavigationControlMenuEntry;
 import com.liferay.product.navigation.control.menu.ProductNavigationControlMenuEntry;
 import com.liferay.product.navigation.control.menu.constants.ProductNavigationControlMenuCategoryKeys;
+import com.liferay.product.navigation.product.menu.helper.ProductNavigationProductMenuHelper;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -60,16 +63,15 @@ public class SideNavigationControlMenuEntry
 			HttpServletResponse httpServletResponse)
 		throws IOException {
 
-		SideNavigationDisplayContext sideNavigationDisplayContext =
-			new SideNavigationDisplayContext(
-				httpServletRequest, _panelAppRegistry);
-
 		try {
+			boolean visible = SideNavigationDisplayContext.isVisible(
+				httpServletRequest);
+
 			PrintWriter printWriter = httpServletResponse.getWriter();
 
 			printWriter.write("<li class=\"control-menu-nav-item");
 
-			if (sideNavigationDisplayContext.isVisible()) {
+			if (visible) {
 				printWriter.write(" active");
 			}
 
@@ -80,7 +82,7 @@ public class SideNavigationControlMenuEntry
 					"control-menu-nav-link lfr-portal-tooltip ",
 					"product-menu-toast-toggle\">"));
 
-			if (sideNavigationDisplayContext.isVisible()) {
+			if (visible) {
 				IconTag openIconTag = new IconTag();
 
 				openIconTag.setCssClass(
@@ -106,7 +108,7 @@ public class SideNavigationControlMenuEntry
 					"{SideNavigationToggler} from application-list-taglib",
 					null, null, true),
 				HashMapBuilder.<String, Object>put(
-					"visible", sideNavigationDisplayContext.isVisible()
+					"visible", visible
 				).build(),
 				httpServletRequest, printWriter);
 
@@ -121,6 +123,14 @@ public class SideNavigationControlMenuEntry
 
 	@Override
 	public boolean isShow(HttpServletRequest httpServletRequest) {
+		if (FeatureFlagManagerUtil.isEnabled(
+				_portal.getCompanyId(httpServletRequest), "LPD-88120") &&
+			_productNavigationProductMenuHelper.isShowProductMenu(
+				httpServletRequest)) {
+
+			return true;
+		}
+
 		ThemeDisplay themeDisplay =
 			(ThemeDisplay)httpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY);
@@ -140,6 +150,13 @@ public class SideNavigationControlMenuEntry
 
 	@Reference
 	private PanelAppRegistry _panelAppRegistry;
+
+	@Reference
+	private Portal _portal;
+
+	@Reference
+	private ProductNavigationProductMenuHelper
+		_productNavigationProductMenuHelper;
 
 	@Reference
 	private ReactRenderer _reactRenderer;

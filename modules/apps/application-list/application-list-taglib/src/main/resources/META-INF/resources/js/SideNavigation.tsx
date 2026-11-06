@@ -23,6 +23,9 @@ import {useSideNavigationFilter} from './useSideNavigationFilter';
 import {useSideNavigationItems} from './useSideNavigationItems';
 import {useSideNavigationStuck} from './useSideNavigationStuck';
 
+const OVERLAY_MEDIA_QUERY = '(max-width: 991.98px)';
+const SIDENAV_TRANSITION_TIMEOUT = 300;
+
 interface Props {
 	canonicalName: string;
 	categoryImageUrl: string;
@@ -30,6 +33,7 @@ interface Props {
 	colorSchemeSessionKey: string;
 	expandedKeys: Array<React.Key>;
 	expandedKeysSessionKey: string;
+	fixed: boolean;
 	items: Array<SideNavigationItem>;
 	label: string;
 	navigationItemsURL: string;
@@ -61,6 +65,7 @@ function SideNavigation({
 	colorSchemeSessionKey,
 	expandedKeys: externalExpandedKeys,
 	expandedKeysSessionKey,
+	fixed,
 	items: externalItems,
 	label,
 	navigationItemsURL,
@@ -83,7 +88,14 @@ function SideNavigation({
 	const [userExpandedKeys, setUserExpandedKeys] =
 		useState<Set<React.Key>>(initialExpandedKeys);
 
-	const [visible, setVisible] = useState(initialVisible);
+	const [closedAsOverlay] = useState(
+		() =>
+			fixed &&
+			initialVisible &&
+			window.matchMedia(OVERLAY_MEDIA_QUERY).matches
+	);
+
+	const [visible, setVisible] = useState(initialVisible && !closedAsOverlay);
 
 	const baseId = useId();
 
@@ -129,6 +141,8 @@ function SideNavigation({
 		[expandedKeys, expandedKeysSessionKey, isFilterActive]
 	);
 
+	const sidenavTransitionControllerRef = useRef<AbortController | null>(null);
+
 	const updateVisible = useCallback(
 		async (visible: boolean) => {
 			await Liferay.Util.Session.set(
@@ -136,12 +150,77 @@ function SideNavigation({
 				visible ? 'visible' : 'hidden'
 			);
 
+			if (fixed) {
+				const {body} = document;
+
+				sidenavTransitionControllerRef.current?.abort();
+
+				const sidenavTransitionController = new AbortController();
+
+				sidenavTransitionControllerRef.current =
+					sidenavTransitionController;
+
+				const endSidenavTransition = () => {
+					body.classList.remove('sidenav-transition');
+
+					sidenavTransitionController.abort();
+				};
+
+				body.addEventListener(
+					'transitionend',
+					(event) => {
+						if (
+							event.propertyName === 'padding-left' &&
+							(event.target as HTMLElement).id === 'wrapper'
+						) {
+							endSidenavTransition();
+						}
+					},
+					{signal: sidenavTransitionController.signal}
+				);
+
+				const timeoutId = setTimeout(
+					endSidenavTransition,
+					SIDENAV_TRANSITION_TIMEOUT
+				);
+
+				sidenavTransitionController.signal.addEventListener(
+					'abort',
+					() => clearTimeout(timeoutId)
+				);
+
+				body.classList.add('sidenav-transition');
+				body.classList.toggle('open', visible);
+				body.classList.toggle('product-menu-open', visible);
+			}
+
 			setVisible(visible);
 
 			Liferay.fire('sideNavigationStateChanged', {visible});
 		},
-		[visibleSessionKey]
+		[fixed, visibleSessionKey]
 	);
+
+	useEffect(
+		function closeOverlayOnLoad() {
+			if (!closedAsOverlay) {
+				return;
+			}
+
+			document.body.classList.remove('open', 'product-menu-open');
+
+			Liferay.fire('sideNavigationStateChanged', {visible: false});
+		},
+		[closedAsOverlay]
+	);
+
+	useEffect(function cleanupSidenavTransition() {
+		return () => {
+			sidenavTransitionControllerRef.current?.abort();
+
+			document.body.classList.remove('sidenav-transition');
+		};
+	}, []);
 
 	useEffect(
 		function setupVisibilityRequestHandler() {
@@ -194,6 +273,14 @@ function SideNavigation({
 			open={visible}
 			testId="sideNavigation"
 		>
+			{fixed && visible && (
+				<div
+					aria-hidden="true"
+					className="side-navigation-backdrop"
+					onClick={() => updateVisible(false)}
+				/>
+			)}
+
 			<UnifiedSidebar.Top>
 				<SideNavigationSearchInput
 					onChange={setQuery}

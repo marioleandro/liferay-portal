@@ -100,6 +100,7 @@ const ITEMS_WITH_SCOPES: Array<SideNavigationItem> = [
 
 const renderComponent = ({
 	expandedKeys = ['content', 'workflow'],
+	fixed = false,
 	items = ITEMS,
 	selectedPortletId = 'assets',
 } = {}) =>
@@ -111,6 +112,7 @@ const renderComponent = ({
 			colorSchemeSessionKey="colorSchemeSessionKey"
 			expandedKeys={expandedKeys}
 			expandedKeysSessionKey="expandedKeysSessionKey"
+			fixed={fixed}
 			items={items}
 			label="Applications"
 			navigationItemsURL="navigationItemsURL"
@@ -698,5 +700,89 @@ describe('SideNavigation', () => {
 		fireEvent.focus(searchInput);
 
 		await waitFor(() => expect(fetch).toHaveBeenCalledTimes(2));
+	});
+
+	describe('when fixed to the page', () => {
+		let overlay = false;
+
+		afterEach(() => {
+			delete (window as any).matchMedia;
+
+			document.body.classList.remove(
+				'open',
+				'product-menu-open',
+				'sidenav-transition'
+			);
+
+			jest.useRealTimers();
+		});
+
+		beforeEach(() => {
+			overlay = false;
+
+			(Liferay.fire as jest.Mock).mockClear();
+
+			(window as any).matchMedia = (query: string) => ({
+				matches: overlay,
+				media: query,
+			});
+
+			document.body.classList.add('open', 'product-menu-open');
+		});
+
+		it('closes from the backdrop and stops pushing the page', async () => {
+			const {container} = renderComponent({fixed: true});
+
+			await userEvent.click(
+				container.querySelector('.side-navigation-backdrop')!
+			);
+
+			await waitFor(() =>
+				expect(document.body).not.toHaveClass('product-menu-open')
+			);
+
+			expect(Liferay.Util.Session.set).toHaveBeenCalledWith(
+				'visibleSessionKey',
+				'hidden'
+			);
+		});
+
+		it('starts closed on a narrow screen without saving the state', () => {
+			overlay = true;
+
+			renderComponent({fixed: true});
+
+			expect(document.body).not.toHaveClass('product-menu-open');
+			expect(Liferay.fire).toHaveBeenCalledWith(
+				'sideNavigationStateChanged',
+				{visible: false}
+			);
+			expect(Liferay.Util.Session.set).not.toHaveBeenCalledWith(
+				'visibleSessionKey',
+				'hidden'
+			);
+		});
+
+		it('stops animating the page when no transition ends', async () => {
+			jest.useFakeTimers();
+
+			renderComponent({fixed: true});
+
+			const user = userEvent.setup({
+				advanceTimers: jest.advanceTimersByTime,
+			});
+
+			await user.click(screen.getByLabelText('close-product-menu'));
+
+			await waitFor(() =>
+				expect(document.body).toHaveClass('sidenav-transition')
+			);
+
+			act(() => {
+				jest.advanceTimersByTime(300);
+			});
+
+			expect(document.body).not.toHaveClass('sidenav-transition');
+		});
 	});
 });
