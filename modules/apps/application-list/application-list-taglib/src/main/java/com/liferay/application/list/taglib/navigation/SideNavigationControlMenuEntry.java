@@ -64,12 +64,12 @@ public class SideNavigationControlMenuEntry
 		throws IOException {
 
 		try {
-			boolean visible = SideNavigationDisplayContext.isVisible(
-				httpServletRequest);
-
 			PrintWriter printWriter = httpServletResponse.getWriter();
 
 			printWriter.write("<li class=\"control-menu-nav-item");
+
+			boolean visible = SideNavigationDisplayContext.isVisible(
+				httpServletRequest);
 
 			if (visible) {
 				printWriter.write(" active");

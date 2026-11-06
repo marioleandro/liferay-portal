@@ -50,26 +50,14 @@ public class ProductMenuTemplateContextContributor
 		String cssClass = GetterUtil.getString(
 			contextObjects.get("bodyCssClass"));
 
-		String productMenuState = "closed";
-
 		if (FeatureFlagManagerUtil.isEnabled(
 				themeDisplay.getCompanyId(), "LPD-88120")) {
 
 			cssClass += " product-menu-unified-sidebar";
-
-			String sideNavigationState = SessionClicks.get(
-				httpServletRequest,
-				"com_liferay_application_list_taglib_SideNavigationState",
-				"visible");
-
-			if (Objects.equals(sideNavigationState, "visible")) {
-				productMenuState = "open";
-			}
 		}
-		else {
-			productMenuState = SessionClicks.get(
-				httpServletRequest, _PRODUCT_MENU_STATE_SESSION_KEY, "closed");
-		}
+
+		String productMenuState = _getProductMenuState(
+			httpServletRequest, themeDisplay);
 
 		if (Objects.equals(productMenuState, "open")) {
 			cssClass += " open product-menu-open";
@@ -80,8 +68,29 @@ public class ProductMenuTemplateContextContributor
 		contextObjects.put("liferay_product_menu_state", productMenuState);
 	}
 
-	private static final String _PRODUCT_MENU_STATE_SESSION_KEY =
-		"com.liferay.product.navigation.product.menu.web_productMenuState";
+	private String _getProductMenuState(
+		HttpServletRequest httpServletRequest, ThemeDisplay themeDisplay) {
+
+		if (FeatureFlagManagerUtil.isEnabled(
+				themeDisplay.getCompanyId(), "LPD-88120")) {
+
+			String sideNavigationState = SessionClicks.get(
+				httpServletRequest,
+				"com_liferay_application_list_taglib_SideNavigationState",
+				"visible");
+
+			if (Objects.equals(sideNavigationState, "visible")) {
+				return "open";
+			}
+
+			return "closed";
+		}
+
+		return SessionClicks.get(
+			httpServletRequest,
+			"com.liferay.product.navigation.product.menu.web_productMenuState",
+			"closed");
+	}
 
 	@Reference
 	private ProductNavigationProductMenuHelper

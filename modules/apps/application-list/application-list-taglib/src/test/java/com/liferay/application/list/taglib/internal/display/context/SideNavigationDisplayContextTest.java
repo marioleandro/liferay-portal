@@ -145,6 +145,7 @@ public class SideNavigationDisplayContextTest {
 
 		ReflectionTestUtil.setFieldValue(_themeDisplay, "_user", user);
 
+		LanguageUtil languageUtil = new LanguageUtil();
 		Language language = Mockito.mock(Language.class);
 
 		Mockito.when(
@@ -153,8 +154,6 @@ public class SideNavigationDisplayContextTest {
 		).thenReturn(
 			"My Site"
 		);
-
-		LanguageUtil languageUtil = new LanguageUtil();
 
 		languageUtil.setLanguage(language);
 
@@ -184,6 +183,7 @@ public class SideNavigationDisplayContextTest {
 			fullName
 		);
 
+		LanguageUtil languageUtil = new LanguageUtil();
 		Language language = Mockito.mock(Language.class);
 
 		Mockito.when(
@@ -191,8 +191,6 @@ public class SideNavigationDisplayContextTest {
 		).thenReturn(
 			fullName + "'s Site"
 		);
-
-		LanguageUtil languageUtil = new LanguageUtil();
 
 		languageUtil.setLanguage(language);
 

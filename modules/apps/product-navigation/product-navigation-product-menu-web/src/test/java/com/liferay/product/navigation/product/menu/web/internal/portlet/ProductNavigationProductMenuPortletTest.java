@@ -37,10 +37,10 @@ public class ProductNavigationProductMenuPortletTest {
 			productNavigationProductMenuPortlet =
 				new ProductNavigationProductMenuPortlet();
 
-		Portal portal = Mockito.mock(Portal.class);
-		ResourceRequest resourceRequest = Mockito.mock(ResourceRequest.class);
 		HttpServletRequest httpServletRequest = Mockito.mock(
 			HttpServletRequest.class);
+		Portal portal = Mockito.mock(Portal.class);
+		ResourceRequest resourceRequest = Mockito.mock(ResourceRequest.class);
 
 		Mockito.when(
 			portal.getHttpServletRequest(resourceRequest)
