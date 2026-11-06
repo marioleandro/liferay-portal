@@ -34,6 +34,43 @@ public class ProductNavigationProductMenuHelperImpl
 
 	@Override
 	public boolean isShowProductMenu(HttpServletRequest httpServletRequest) {
+		Boolean showProductMenu = (Boolean)httpServletRequest.getAttribute(
+			_SHOW_PRODUCT_MENU);
+
+		if (showProductMenu == null) {
+			showProductMenu = _isShowProductMenu(httpServletRequest);
+
+			httpServletRequest.setAttribute(
+				_SHOW_PRODUCT_MENU, showProductMenu);
+		}
+
+		return showProductMenu;
+	}
+
+	private boolean _isApplicationsMenuApp(ThemeDisplay themeDisplay) {
+		if (Validator.isNull(themeDisplay.getPpid())) {
+			return false;
+		}
+
+		PanelCategoryHelper panelCategoryHelper = new PanelCategoryHelper(
+			_panelAppRegistry);
+
+		if (!panelCategoryHelper.isApplicationsMenuApp(
+				themeDisplay.getPpid())) {
+
+			return false;
+		}
+
+		Layout layout = themeDisplay.getLayout();
+
+		if ((layout != null) && !layout.isTypeControlPanel()) {
+			return false;
+		}
+
+		return true;
+	}
+
+	private boolean _isShowProductMenu(HttpServletRequest httpServletRequest) {
 		ThemeDisplay themeDisplay =
 			(ThemeDisplay)httpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY);
@@ -64,28 +101,9 @@ public class ProductNavigationProductMenuHelperImpl
 		return !childPanelCategories.isEmpty();
 	}
 
-	private boolean _isApplicationsMenuApp(ThemeDisplay themeDisplay) {
-		if (Validator.isNull(themeDisplay.getPpid())) {
-			return false;
-		}
-
-		PanelCategoryHelper panelCategoryHelper = new PanelCategoryHelper(
-			_panelAppRegistry);
-
-		if (!panelCategoryHelper.isApplicationsMenuApp(
-				themeDisplay.getPpid())) {
-
-			return false;
-		}
-
-		Layout layout = themeDisplay.getLayout();
-
-		if ((layout != null) && !layout.isTypeControlPanel()) {
-			return false;
-		}
-
-		return true;
-	}
+	private static final String _SHOW_PRODUCT_MENU =
+		ProductNavigationProductMenuHelperImpl.class.getName() +
+			"#SHOW_PRODUCT_MENU";
 
 	@Reference
 	private PanelAppRegistry _panelAppRegistry;

@@ -9,6 +9,7 @@ import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.content.security.policy.ContentSecurityPolicyNonceProviderUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.portlet.PortletURLFactoryUtil;
@@ -199,6 +200,12 @@ public class ProductMenuProductNavigationControlMenuEntry
 	@Override
 	public boolean isShow(HttpServletRequest httpServletRequest)
 		throws PortalException {
+
+		if (FeatureFlagManagerUtil.isEnabled(
+				_portal.getCompanyId(httpServletRequest), "LPD-88120")) {
+
+			return false;
+		}
 
 		return _productNavigationProductMenuHelper.isShowProductMenu(
 			httpServletRequest);

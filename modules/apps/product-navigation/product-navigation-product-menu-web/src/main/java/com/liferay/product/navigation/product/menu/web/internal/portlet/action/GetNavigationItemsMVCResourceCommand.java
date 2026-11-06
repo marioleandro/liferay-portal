@@ -73,13 +73,13 @@ public class GetNavigationItemsMVCResourceCommand
 
 	private void _addNavigationItemsJSONArrays(
 			HttpServletRequest httpServletRequest,
-			JSONObject navigationItemsJSONObject, PanelCategory panelCategory,
+			JSONObject navigationItemsJSONObject, String panelCategoryKey,
 			ThemeDisplay themeDisplay)
 		throws Exception {
 
 		for (PanelApp panelApp :
 				_panelAppRegistry.getPanelApps(
-					panelCategory.getKey(), themeDisplay.getPermissionChecker(),
+					panelCategoryKey, themeDisplay.getPermissionChecker(),
 					themeDisplay.getScopeGroup())) {
 
 			try {
@@ -145,13 +145,10 @@ public class GetNavigationItemsMVCResourceCommand
 		ThemeDisplay themeDisplay = (ThemeDisplay)resourceRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 
-		PanelCategory panelCategory =
-			_panelCategoryHelper.getActivePanelCategory(
-				PanelCategoryKeys.APPLICATIONS_MENU,
-				ParamUtil.getString(resourceRequest, "selectedPortletId"),
-				themeDisplay);
+		String panelCategoryKey = _getPanelCategoryKey(
+			resourceRequest, themeDisplay);
 
-		if (panelCategory == null) {
+		if (panelCategoryKey == null) {
 			return navigationItemsJSONObject;
 		}
 
@@ -159,19 +156,45 @@ public class GetNavigationItemsMVCResourceCommand
 			resourceRequest);
 
 		_addNavigationItemsJSONArrays(
-			httpServletRequest, navigationItemsJSONObject, panelCategory,
+			httpServletRequest, navigationItemsJSONObject, panelCategoryKey,
 			themeDisplay);
 
 		for (PanelCategory childPanelCategory :
 				_panelCategoryHelper.getChildPanelCategories(
-					panelCategory.getKey(), themeDisplay)) {
+					panelCategoryKey, themeDisplay)) {
 
 			_addNavigationItemsJSONArrays(
 				httpServletRequest, navigationItemsJSONObject,
-				childPanelCategory, themeDisplay);
+				childPanelCategory.getKey(), themeDisplay);
 		}
 
 		return navigationItemsJSONObject;
+	}
+
+	private String _getPanelCategoryKey(
+		ResourceRequest resourceRequest, ThemeDisplay themeDisplay) {
+
+		String rootPanelCategoryKey = ParamUtil.getString(
+			resourceRequest, "rootPanelCategoryKey",
+			PanelCategoryKeys.APPLICATIONS_MENU);
+
+		if (rootPanelCategoryKey.equals(
+				PanelCategoryKeys.SITE_ADMINISTRATION)) {
+
+			return rootPanelCategoryKey;
+		}
+
+		PanelCategory panelCategory =
+			_panelCategoryHelper.getActivePanelCategory(
+				PanelCategoryKeys.APPLICATIONS_MENU,
+				ParamUtil.getString(resourceRequest, "selectedPortletId"),
+				themeDisplay);
+
+		if (panelCategory == null) {
+			return null;
+		}
+
+		return panelCategory.getKey();
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
