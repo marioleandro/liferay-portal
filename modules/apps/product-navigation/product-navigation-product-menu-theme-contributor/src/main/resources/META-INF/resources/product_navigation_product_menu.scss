@@ -35,6 +35,8 @@ html#{$cadmin-selector} {
 	}
 
 	body.product-menu-unified-sidebar {
+		--product-menu-width: #{$product-menu-unified-sidebar-width};
+
 		&.product-menu-open {
 			#wrapper,
 			.cadmin.control-menu-container {
