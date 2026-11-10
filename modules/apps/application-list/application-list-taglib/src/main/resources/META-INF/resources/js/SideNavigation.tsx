@@ -9,19 +9,20 @@ import {SearchResultsMessage} from '@liferay/layout-js-components-web';
 import classNames from 'classnames';
 import {
 	UnifiedSidebar,
+	UnifiedSidebarItemContent,
+	UnifiedSidebarResultsSkeleton,
+	UnifiedSidebarSearchInput,
 	UnifiedSidebarSiteSelector,
 	useId,
+	useUnifiedSidebarFilter,
+	useUnifiedSidebarItems,
+	useUnifiedSidebarStuck,
 } from 'frontend-js-components-web';
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 
-import SideNavigationItemContent from './SideNavigationItemContent';
-import SideNavigationResultsSkeleton from './SideNavigationResultsSkeleton';
 import SideNavigationScopeItem from './SideNavigationScopeItem';
-import SideNavigationSearchInput from './SideNavigationSearchInput';
+import {filterSideNavigationItems} from './filterSideNavigationItems';
 import {SideNavigationItem} from './types/SideNavigation';
-import {useSideNavigationFilter} from './useSideNavigationFilter';
-import {useSideNavigationItems} from './useSideNavigationItems';
-import {useSideNavigationStuck} from './useSideNavigationStuck';
 
 interface Props {
 	canonicalName: string;
@@ -93,10 +94,10 @@ function SideNavigation({
 		items: navigationItems,
 		loading,
 		prefetchFilterOnlyItems,
-	} = useSideNavigationItems(externalItems, navigationItemsURL);
+	} = useUnifiedSidebarItems(externalItems, navigationItemsURL);
 
 	const {expandedKeys, isFilterActive, items, numberOfMatches, setQuery} =
-		useSideNavigationFilter(navigationItems);
+		useUnifiedSidebarFilter(navigationItems, filterSideNavigationItems);
 
 	const [filterCollapse, setFilterCollapse] = useState<{
 		appliesTo: Set<React.Key>;
@@ -170,7 +171,11 @@ function SideNavigation({
 
 	const showResultsSkeleton = isFilterActive && loading && !numberOfResults;
 
-	const stuck = useSideNavigationStuck(scrollRef, items);
+	const stuck = useUnifiedSidebarStuck(
+		scrollRef,
+		items,
+		'.side-navigation-scope-item'
+	);
 
 	return (
 		<UnifiedSidebar
@@ -195,7 +200,7 @@ function SideNavigation({
 			testId="sideNavigation"
 		>
 			<UnifiedSidebar.Top>
-				<SideNavigationSearchInput
+				<UnifiedSidebarSearchInput
 					onChange={setQuery}
 					onFocus={prefetchFilterOnlyItems}
 				/>
@@ -216,7 +221,7 @@ function SideNavigation({
 			>
 				<UnifiedSidebar.Body className="c-px-0">
 					{showResultsSkeleton ? (
-						<SideNavigationResultsSkeleton />
+						<UnifiedSidebarResultsSkeleton />
 					) : numberOfResults ? (
 						<ClayVerticalNav
 							active={selectedPortletId}
@@ -267,7 +272,7 @@ function SideNavigation({
 										key={item.id}
 										textValue={item.label}
 									>
-										<SideNavigationItemContent
+										<UnifiedSidebarItemContent
 											item={item}
 										/>
 									</ClayVerticalNav.Item>
