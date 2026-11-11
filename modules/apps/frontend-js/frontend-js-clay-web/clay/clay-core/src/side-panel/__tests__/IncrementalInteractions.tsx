@@ -26,7 +26,13 @@ jest.mock('../../focus-trap/FocusTrap', () => {
 	};
 });
 
-function Example({defaultOpen = false}: {defaultOpen?: boolean}) {
+function Example({
+	backdrop = false,
+	defaultOpen = false,
+}: {
+	backdrop?: boolean;
+	defaultOpen?: boolean;
+}) {
 	const [open, setOpen] = useState(defaultOpen);
 
 	const ref = useRef(null);
@@ -44,6 +50,7 @@ function Example({defaultOpen = false}: {defaultOpen?: boolean}) {
 			<div ref={ref}>
 				<SidePanel
 					as="aside"
+					backdrop={backdrop}
 					containerRef={ref}
 					id="sidepanel"
 					onOpenChange={setOpen}
@@ -134,5 +141,27 @@ describe('SidePanel incremental interactions', () => {
 
 		expect(button).toHaveFocus();
 		expect(panel).toHaveAttribute('inert');
+	});
+
+	it('appends the backdrop to the body and closes when clicking it', async () => {
+		const {getAllByRole, getByRole} = render(<Example backdrop />);
+
+		const [button] = getAllByRole('button');
+		const panel = getByRole('complementary');
+
+		expect(document.querySelector('.c-slideout-backdrop')).toBeNull();
+
+		userEvent.click(button!);
+
+		const backdrop = document.querySelector('.c-slideout-backdrop');
+
+		expect(backdrop?.parentElement?.parentElement).toBe(document.body);
+
+		userEvent.click(backdrop!);
+
+		await waitFor(() => {
+			expect(document.querySelector('.c-slideout-backdrop')).toBeNull();
+			expect(panel).toHaveAttribute('inert');
+		});
 	});
 });

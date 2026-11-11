@@ -47,6 +47,14 @@ $cadmin-zindex-sidenav: calc(#{$cadmin-zindex-dropdown} - 25) !default; // 975
 
 $cadmin-zindex-c-slideout: $cadmin-zindex-sidenav !default; // 975
 
+$cadmin-zindex-c-slideout-backdrop: calc(
+	#{$cadmin-zindex-sticky} + 1
+) !default; // 990
+
+$cadmin-zindex-c-slideout-fixed: calc(
+	#{$cadmin-zindex-sticky} + 2
+) !default; // 991
+
 $cadmin-zindex-c-slideout-height-full: calc(
 	#{$cadmin-zindex-fixed} + 5
 ) !default; // 1035

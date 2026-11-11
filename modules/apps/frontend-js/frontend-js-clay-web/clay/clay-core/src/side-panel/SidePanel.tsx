@@ -5,6 +5,8 @@
 
 import {useProvider} from '@clayui/provider';
 import {
+	ClayPortal,
+	IPortalBaseProps,
 	Keys,
 	useControlledState,
 	useId,
@@ -64,6 +66,18 @@ export type Props = {
 	 * only important content.
 	 */
 	'as'?: 'aside' | 'div' | 'nav' | 'section';
+
+	/**
+	 * Flag to render a backdrop behind the SidePanel while it is open. The
+	 * backdrop is appended to the end of the body element and closes the
+	 * SidePanel when clicked.
+	 */
+	'backdrop'?: boolean;
+
+	/**
+	 * Props to add to the ClayPortal that renders the backdrop.
+	 */
+	'backdropContainerProps'?: IPortalBaseProps;
 
 	/**
 	 * Children content to render a content.
@@ -144,6 +158,8 @@ export function SidePanel({
 	'aria-label': ariaLabel,
 	'aria-labelledby': ariaLabelledby,
 	'as': As = 'div',
+	backdrop = false,
+	backdropContainerProps = {},
 	children,
 	className,
 	'closeOnEscape': externalCloseOnEscape = true,
@@ -259,112 +275,130 @@ export function SidePanel({
 		: externalPanelWidth && Math.max(externalPanelWidth, PANEL_WIDTH_MIN);
 
 	return (
-		<div
-			className={classnames(
-				`c-slideout c-slideout-${position} c-slideout-push`,
-				{
-					'c-slideout-end': direction === 'right',
-					'c-slideout-start': direction === 'left',
+		<>
+			<div
+				className={classnames(
+					`c-slideout c-slideout-${position} c-slideout-push`,
+					{
+						'c-slideout-end': direction === 'right',
+						'c-slideout-start': direction === 'left',
+					}
+				)}
+				ref={slideoutRef}
+				style={
+					position === 'fixed' ? {top: `${offsetTop}px`} : undefined
 				}
-			)}
-			ref={slideoutRef}
-			style={position === 'fixed' ? {top: `${offsetTop}px`} : undefined}
-		>
-			<CSSTransition
-				appear={open}
-				className={classnames('sidebar', className, {
-					'sidebar-dark': displayType === 'dark',
-					'sidebar-light': displayType === 'light',
-				})}
-				classNames={{
-					appearActive: 'c-slideout-show',
-					appearDone: 'c-slideout-show',
-					enter: 'c-slideout-transition c-slideout-transition-in',
-					enterActive: 'c-slideout-show',
-					enterDone: 'c-slideout-show',
-					exit: 'c-slideout-transition c-slideout-transition-out',
-					exitActive: '',
-				}}
-				in={open}
-				onEnter={() => {
-					containerRef.current?.classList.add(
-						'c-slideout-transition',
-						'c-slideout-transition-in',
-						`c-slideout-push-${
-							direction === 'left' ? 'start' : 'end'
-						}`
-					);
-				}}
-				onEntered={(_, isAppearing) => {
-					slideoutRef.current?.classList.add('c-slideout-shown');
-
-					containerRef.current?.classList.remove(
-						'c-slideout-transition',
-						'c-slideout-transition-in'
-					);
-
-					if (!isAppearing) {
-
-						// Move focus to sidepanel when opening but not if
-						// opened on first load.
-
-						sidePanelRef.current?.focus({preventScroll: true});
-					}
-				}}
-				onExit={() => {
-					containerRef.current?.classList.add(
-						'c-slideout-transition',
-						'c-slideout-transition-out'
-					);
-
-					containerRef.current?.classList.remove(
-						`c-slideout-push-${
-							direction === 'left' ? 'start' : 'end'
-						}`
-					);
-				}}
-				onExited={() => {
-					slideoutRef.current?.classList.remove('c-slideout-shown');
-
-					containerRef.current?.classList.remove(
-						'c-slideout-transition',
-						'c-slideout-transition-out'
-					);
-				}}
-				timeout={prefersReducedMotion ? 0 : open ? 300 : 200}
 			>
-				<As
-					{...otherProps}
-					aria-label={ariaLabel}
-					aria-labelledby={
-						!ariaLabelledby && !ariaLabel ? titleId : ariaLabelledby
-					}
-					id={panelId}
-					ref={sidePanelRef}
-					style={panelWidth ? {width: panelWidth} : undefined}
-					tabIndex={-1}
-				>
-					<SidePanelContext.Provider
-						value={{onOpenChange: setOpen, open, titleId}}
-					>
-						<FocusTrap active={isMobile && open}>
-							{children}
-						</FocusTrap>
+				<CSSTransition
+					appear={open}
+					className={classnames('sidebar', className, {
+						'sidebar-dark': displayType === 'dark',
+						'sidebar-light': displayType === 'light',
+					})}
+					classNames={{
+						appearActive: 'c-slideout-show',
+						appearDone: 'c-slideout-show',
+						enter: 'c-slideout-transition c-slideout-transition-in',
+						enterActive: 'c-slideout-show',
+						enterDone: 'c-slideout-show',
+						exit: 'c-slideout-transition c-slideout-transition-out',
+						exitActive: '',
+					}}
+					in={open}
+					onEnter={() => {
+						containerRef.current?.classList.add(
+							'c-slideout-transition',
+							'c-slideout-transition-in',
+							`c-slideout-push-${
+								direction === 'left' ? 'start' : 'end'
+							}`
+						);
+					}}
+					onEntered={(_, isAppearing) => {
+						slideoutRef.current?.classList.add('c-slideout-shown');
 
-						{isResizable && (
-							<ResizeHandle
-								aria-controls={panelId}
-								maxWidth={sidePanelObservedMaxWidth}
-								minWidth={PANEL_WIDTH_MIN}
-								onWidthChange={setResizeWidth}
-								position={direction}
-								width={panelWidth}
-							/>
-						)}
-					</SidePanelContext.Provider>
-				</As>
-			</CSSTransition>
-		</div>
+						containerRef.current?.classList.remove(
+							'c-slideout-transition',
+							'c-slideout-transition-in'
+						);
+
+						if (!isAppearing) {
+
+							// Move focus to sidepanel when opening but not if
+							// opened on first load.
+
+							sidePanelRef.current?.focus({preventScroll: true});
+						}
+					}}
+					onExit={() => {
+						containerRef.current?.classList.add(
+							'c-slideout-transition',
+							'c-slideout-transition-out'
+						);
+
+						containerRef.current?.classList.remove(
+							`c-slideout-push-${
+								direction === 'left' ? 'start' : 'end'
+							}`
+						);
+					}}
+					onExited={() => {
+						slideoutRef.current?.classList.remove(
+							'c-slideout-shown'
+						);
+
+						containerRef.current?.classList.remove(
+							'c-slideout-transition',
+							'c-slideout-transition-out'
+						);
+					}}
+					timeout={prefersReducedMotion ? 0 : open ? 300 : 200}
+				>
+					<As
+						{...otherProps}
+						aria-label={ariaLabel}
+						aria-labelledby={
+							!ariaLabelledby && !ariaLabel
+								? titleId
+								: ariaLabelledby
+						}
+						id={panelId}
+						ref={sidePanelRef}
+						style={panelWidth ? {width: panelWidth} : undefined}
+						tabIndex={-1}
+					>
+						<SidePanelContext.Provider
+							value={{onOpenChange: setOpen, open, titleId}}
+						>
+							<FocusTrap active={isMobile && open}>
+								{children}
+							</FocusTrap>
+
+							{isResizable && (
+								<ResizeHandle
+									aria-controls={panelId}
+									maxWidth={sidePanelObservedMaxWidth}
+									minWidth={PANEL_WIDTH_MIN}
+									onWidthChange={setResizeWidth}
+									position={direction}
+									width={panelWidth}
+								/>
+							)}
+						</SidePanelContext.Provider>
+					</As>
+				</CSSTransition>
+			</div>
+
+			{backdrop && open && (
+				<ClayPortal {...backdropContainerProps}>
+					<div
+						aria-hidden="true"
+						className="c-slideout-backdrop"
+						onClick={() => setOpen(false)}
+					/>
+				</ClayPortal>
+			)}
+		</>
 	);
 }
 

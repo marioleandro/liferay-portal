@@ -6,8 +6,8 @@
 	@include clay-css($cadmin-c-slideout-transition-out);
 }
 
-.c-slideout-fixed {
-	@include clay-css($cadmin-c-slideout-fixed);
+.c-slideout-backdrop {
+	@include clay-css($cadmin-c-slideout-backdrop);
 }
 
 .c-slideout-absolute {
@@ -28,6 +28,12 @@
 
 .c-slideout {
 	@include clay-slideout-variant($cadmin-c-slideout);
+}
+
+// Declared after .c-slideout so its z-index wins over the base one.
+
+.c-slideout-fixed {
+	@include clay-css($cadmin-c-slideout-fixed);
 }
 
 .c-slideout-start {

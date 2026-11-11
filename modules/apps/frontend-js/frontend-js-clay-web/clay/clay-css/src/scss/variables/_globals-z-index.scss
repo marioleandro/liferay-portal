@@ -45,4 +45,8 @@ $zindex-sidenav: calc(#{$zindex-dropdown} - 25) !default; // 975
 
 $zindex-c-slideout: $zindex-sidenav !default; // 975
 
+$zindex-c-slideout-backdrop: calc(#{$zindex-sticky} + 1) !default; // 990
+
+$zindex-c-slideout-fixed: calc(#{$zindex-sticky} + 2) !default; // 991
+
 $zindex-c-slideout-height-full: calc(#{$zindex-fixed} + 5) !default; // 1035
