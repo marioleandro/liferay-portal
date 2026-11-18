@@ -69,6 +69,8 @@ export {
 	type UploadRequestCallback,
 } from './multiple_file_uploader/types';
 
+export {default as createPersistentComponent} from './persistent_component/createPersistentComponent';
+
 export {default as CollaboratorService} from './share_modal_content/CollaboratorService';
 export type {
 	CollaboratorItem,

@@ -4,4 +4,5 @@
  */
 
 export {default as ProductMenuTree} from './ProductMenuTree';
+export {default as PersistentProductMenuSidebar} from './product_menu_sidebar/PersistentProductMenuSidebar';
 export {default as ProductMenuSidebar} from './product_menu_sidebar/ProductMenuSidebar';

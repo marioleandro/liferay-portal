@@ -11,9 +11,9 @@
 ProductMenuSidebarDisplayContext productMenuSidebarDisplayContext = new ProductMenuSidebarDisplayContext(request);
 %>
 
-<div class="cadmin d-print-none lfr-product-menu-panel product-menu-sidebar" id="com_liferay_product_navigation_product_menu_web_sidebar_container">
+<div class="cadmin d-print-none lfr-product-menu-panel product-menu-sidebar" data-persistent-key="<%= themeDisplay.getScopeGroupId() %>" id="com_liferay_product_navigation_product_menu_web_sidebar_container">
 	<c:if test="<%= productMenuSidebarDisplayContext.isVisible() %>">
-		<div class="c-slideout c-slideout-fixed c-slideout-height-full c-slideout-push c-slideout-shown c-slideout-start">
+		<div class="c-slideout c-slideout-fixed c-slideout-height-full c-slideout-push c-slideout-shown c-slideout-start" data-persistent-skeleton="true">
 			<section class="c-slideout-show sidebar sidebar-light skeleton" data-qa-id="sideNavigation" data-testid="sideNavigation">
 				<svg class="product-menu-sidebar-skeleton">
 					<use href="<%= String.format("%s/skeletons/homes_side_navigation.svg#homes-side-navigation", themeDisplay.getPathThemeImages()) %>" />
@@ -23,7 +23,7 @@ ProductMenuSidebarDisplayContext productMenuSidebarDisplayContext = new ProductM
 	</c:if>
 
 	<react:component
-		module="{ProductMenuSidebar} from product-navigation-product-menu-web"
+		module="{PersistentProductMenuSidebar} from product-navigation-product-menu-web"
 		props="<%= productMenuSidebarDisplayContext.getProps() %>"
 	/>
 </div>
