@@ -146,9 +146,9 @@ public class SideNavigationDisplayContext {
 
 	public boolean isVisible() {
 		String state = SessionClicks.get(
-			_httpServletRequest, _VISIBLE_SESSION_KEY, "visible");
+			_httpServletRequest, _VISIBLE_SESSION_KEY, "open");
 
-		return state.equals("visible");
+		return state.equals("open");
 	}
 
 	private String _getColorScheme() {
@@ -347,7 +347,7 @@ public class SideNavigationDisplayContext {
 		"com_liferay_application_list_taglib_SideNavigationColorScheme";
 
 	private static final String _VISIBLE_SESSION_KEY =
-		"com_liferay_application_list_taglib_SideNavigationState";
+		"com.liferay.product.navigation.product.menu.web_productMenuState";
 
 	private static final Snapshot<ItemSelector> _itemSelectorSnapshot =
 		new Snapshot<>(SideNavigationDisplayContext.class, ItemSelector.class);

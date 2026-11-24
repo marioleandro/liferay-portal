@@ -96,12 +96,10 @@ function SideNavigation({
 		});
 
 	const {updateVisible, visible} = useUnifiedSidebarVisibility({
-		hiddenSessionValue: 'hidden',
 		initialVisible,
 		sessionKey: visibleSessionKey,
 		stateChangedEventName: 'sideNavigationStateChanged',
 		stateRequestedEventName: 'sideNavigationStateRequested',
-		visibleSessionValue: 'visible',
 	});
 
 	const numberOfResults = useMemo(

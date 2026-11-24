@@ -64,13 +64,11 @@ export function useProductMenuSidebarVisibility(
 	}, []);
 
 	const {updateVisible, visible} = useUnifiedSidebarVisibility({
-		hiddenSessionValue: 'closed',
 		initialVisible: initiallyVisible,
 		onVisibleChange: updateBody,
 		sessionKey: visibleSessionKey,
 		stateChangedEventName: 'productMenuSidebarStateChanged',
 		stateRequestedEventName: 'productMenuSidebarStateRequested',
-		visibleSessionValue: 'open',
 	});
 
 	useEffect(function cleanupTransition() {
