@@ -146,7 +146,7 @@ public class SideNavigationDisplayContext {
 
 	public boolean isVisible() {
 		String state = SessionClicks.get(
-			_httpServletRequest, _VISIBLE_SESSION_KEY, "open");
+			_httpServletRequest, _VISIBLE_SESSION_KEY, "closed");
 
 		return state.equals("open");
 	}

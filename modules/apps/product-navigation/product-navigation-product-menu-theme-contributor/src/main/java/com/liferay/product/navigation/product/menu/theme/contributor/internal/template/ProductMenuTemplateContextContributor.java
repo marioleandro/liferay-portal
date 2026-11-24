@@ -60,7 +60,7 @@ public class ProductMenuTemplateContextContributor
 		String productMenuState = SessionClicks.get(
 			httpServletRequest,
 			"com.liferay.product.navigation.product.menu.web_productMenuState",
-			unifiedSidebar ? "open" : "closed");
+			"closed");
 
 		if (Objects.equals(productMenuState, "open")) {
 			cssClass += " open product-menu-open";

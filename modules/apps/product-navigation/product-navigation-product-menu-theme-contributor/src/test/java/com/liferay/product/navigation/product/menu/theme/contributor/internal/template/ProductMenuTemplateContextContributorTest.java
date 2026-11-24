@@ -101,10 +101,10 @@ public class ProductMenuTemplateContextContributorTest {
 		Map<String, Object> contextObjects = _prepare();
 
 		Assert.assertEquals(
-			" product-menu-unified-sidebar open product-menu-open",
+			" product-menu-unified-sidebar",
 			contextObjects.get("bodyCssClass"));
 		Assert.assertEquals(
-			"open", contextObjects.get("liferay_product_menu_state"));
+			"closed", contextObjects.get("liferay_product_menu_state"));
 	}
 
 	private Map<String, Object> _prepare() {

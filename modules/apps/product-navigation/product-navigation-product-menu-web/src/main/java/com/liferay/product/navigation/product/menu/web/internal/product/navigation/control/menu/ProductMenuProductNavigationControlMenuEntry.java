@@ -91,14 +91,14 @@ public class ProductMenuProductNavigationControlMenuEntry
 			openIconTag.setCssClass("icon-monospaced icon-product-menu-open");
 			openIconTag.setImage("product-menu-open");
 
-			boolean unifiedSidebar = FeatureFlagManagerUtil.isEnabled(
-				_portal.getCompanyId(httpServletRequest), "LPD-88120");
-
 			String productMenuState = SessionClicks.get(
 				httpServletRequest,
 				"com.liferay.product.navigation.product.menu." +
 					"web_productMenuState",
-				unifiedSidebar ? "open" : "closed");
+				"closed");
+
+			boolean unifiedSidebar = FeatureFlagManagerUtil.isEnabled(
+				_portal.getCompanyId(httpServletRequest), "LPD-88120");
 
 			if (unifiedSidebar) {
 				boolean open = Objects.equals(productMenuState, "open");
