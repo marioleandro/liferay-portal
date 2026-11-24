@@ -101,6 +101,7 @@ function ProductMenuSidebarNavigation({
 					) : numberOfResults ? (
 						<ClayVerticalNav
 							active={selectedPortletId}
+							aria-label={Liferay.Language.get('navigation')}
 							defaultExpandedKeys={initialExpandedKeys}
 							displayType="primary"
 							expandedKeys={expandedKeys}
